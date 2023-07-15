@@ -1,5 +1,7 @@
 package fundementals
 
+import "github.com/AlbertRossJoh/itualgs_go/customerrors"
+
 type Queue[T any] struct {
 	items []T
 }
@@ -20,10 +22,13 @@ func (q *Queue[T]) Enqueue(item T) {
 	q.items = append(q.items, item)
 }
 
-func (q *Queue[T]) Dequeue() T {
+func (q *Queue[T]) Dequeue() (T, error) {
+	if q.IsEmpty() {
+		return *new(T), &customerrors.ErrQueueEmpty{}
+	}
 	item := q.items[0]
 	q.items = q.items[1:]
-	return item
+	return item, nil
 }
 
 func (q *Queue[T]) Size() int {
@@ -34,8 +39,11 @@ func (q *Queue[T]) IsEmpty() bool {
 	return q.Size() == 0
 }
 
-func (q *Queue[T]) Peek() T {
-	return q.items[0]
+func (q *Queue[T]) Peek() (T, error) {
+	if q.IsEmpty() {
+		return *new(T), &customerrors.ErrQueueEmpty{}
+	}
+	return q.items[0], nil
 }
 
 func (q *Queue[T]) Clear() {
