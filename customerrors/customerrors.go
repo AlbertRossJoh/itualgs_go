@@ -24,7 +24,7 @@ func (e *ErrZeroVector) Error() string {
 }
 
 func (e *ErrVectorCross) Error() string {
-	return "Crossing is currently only supported for 2D vectors"
+	return "Crossing is only supported for 2D vectors"
 }
 
 func (e *ErrMatrixNotSquare) Error() string {

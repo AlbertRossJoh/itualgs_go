@@ -52,7 +52,7 @@ func (m Matrix) AugmentRight(v Vector) {
 		for j := 0; j < m.Cols; j++ {
 			(*tmp.Data)[i][j] = (*m.Data)[i][j]
 		}
-		(*tmp.Data)[i][m.Cols] = v.elements[i]
+		(*tmp.Data)[i][m.Cols] = (*v.elements)[i]
 	}
 }
 
@@ -60,7 +60,7 @@ func (m Matrix) VectorProduct(v Vector) Vector {
 	tmp := NewVector(m.Rows)
 	for i := 0; i < m.Rows; i++ {
 		for j := 0; j < m.Cols; j++ {
-			tmp.elements[i] += (*m.Data)[i][j] * v.elements[j]
+			(*tmp.elements)[i] += (*m.Data)[i][j] * (*v.elements)[j]
 		}
 	}
 	return tmp
@@ -177,7 +177,7 @@ func (m Matrix) ExtractColumn(col int) Vector {
 	}
 	acc := NewVector(m.Rows)
 	for i := 0; i < m.Rows; i++ {
-		acc.elements[i] = (*m.Data)[i][col]
+		(*acc.elements)[i] = (*m.Data)[i][col]
 	}
 	return acc
 }
