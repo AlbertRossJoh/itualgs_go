@@ -21,6 +21,6 @@ func TestDotProduct(t *testing.T) {
 	v2 := fund.CreateVectorFromArray(&arr)
 	dp := v.Dot(v2)
 	if dp != 30 {
-		t.Error("Expected 10, got ", dp)
+		t.Error("Expected 30, got ", dp)
 	}
 }
