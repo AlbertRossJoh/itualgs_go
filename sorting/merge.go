@@ -1,15 +1,19 @@
 package sorting
 
 import (
+	"sync"
+
 	"golang.org/x/exp/constraints"
 )
+
+var max = 1 << 11
 
 func MergeSort[T constraints.Ordered](arr *[]T) {
 	var aux []T
 	for _, elm := range *arr {
 		aux = append(aux, elm)
 	}
-	sort(&aux, arr, 0, len(*arr)-1)
+	sort_parallel(&aux, arr, 0, len(*arr)-1)
 }
 
 func merge[T constraints.Ordered](src *[]T, dst *[]T, lo int, mid int, hi int) {
@@ -41,6 +45,39 @@ func sort[T constraints.Ordered](src *[]T, dst *[]T, lo int, hi int) {
 	sort(dst, src, lo, mid)
 	sort(dst, src, mid+1, hi)
 
+	if !((*src)[mid+1] < (*src)[mid]) {
+		for i := lo; i <= hi; i++ {
+			(*dst)[i] = (*src)[i]
+		}
+		return
+	}
+
+	merge(src, dst, lo, mid, hi)
+}
+
+func sort_parallel[T constraints.Ordered](src *[]T, dst *[]T, lo int, hi int) {
+	if len(*src) <= max {
+		sort(src, dst, lo, hi)
+		return
+	}
+	if hi <= lo+7 {
+		insertionSort(dst, lo, hi)
+		return
+	}
+
+	mid := lo + (hi-lo)/2
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		sort_parallel(dst, src, lo, mid)
+	}()
+
+	sort_parallel(dst, src, mid+1, hi)
+
+	wg.Wait()
 	if !((*src)[mid+1] < (*src)[mid]) {
 		for i := lo; i <= hi; i++ {
 			(*dst)[i] = (*src)[i]

@@ -1,19 +1,21 @@
 package tests
 
 import (
-	"reflect"
+	"math/rand"
 	"testing"
+	"time"
 
+	utils "github.com/AlbertRossJoh/itualgs_go/sharedfunctions"
 	sort "github.com/AlbertRossJoh/itualgs_go/sorting"
 )
 
 func TestMergeSort(t *testing.T) {
-	a := []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
+
+	rand.Seed(time.Now().Unix())
+	a := rand.Perm(100_000_000)
 	sort.MergeSort(&a)
 
-	expected := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-
-	if !reflect.DeepEqual(a, expected) {
-		t.Errorf("InsertionSort failed expected %v got %v", expected, a)
+	if !utils.IsSorted(&a) {
+		t.Errorf("Mergesort failed")
 	}
 }
