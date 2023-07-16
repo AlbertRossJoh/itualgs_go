@@ -134,6 +134,32 @@ func TestGetAllKeys(t *testing.T) {
 
 }
 
+func TestGetAllValues(t *testing.T) {
+	b := bst.NewBST[int32, string](22, "Albert")
+	b.Put(24, "Poul")
+	b.Put(23, "Ole")
+	b.Put(25, "Pernille")
+	b.Put(20, "Birgit")
+	b.Put(21, "Peter")
+	arr, err1 := b.GetAllValues()
+
+	if err1 != nil {
+		t.Errorf("Something went wrong")
+	}
+
+	expected := []string{"Birgit", "Peter", "Albert", "Ole", "Poul", "Pernille"}
+	_, err := b.Get(25)
+
+	if err != nil {
+		t.Errorf("The tree got fucked up")
+	}
+
+	if !utils.CompareArrays(&arr, &expected) {
+		t.Errorf("The array from the bst is not returned correctly, expected: %v, got: %v", expected, arr)
+	}
+
+}
+
 func TestGetAllKeysFromSingleTree(t *testing.T) {
 	b := bst.NewBST[int32, string](22, "Albert")
 	arr, err1 := b.GetAllKeys()
@@ -176,5 +202,34 @@ func TestDeleteLastKey(t *testing.T) {
 
 	if !b.IsEmpty() {
 		t.Errorf("The tree should be empty")
+	}
+}
+
+func TestMapify(t *testing.T) {
+	b := bst.NewBST[int32, string](22, "Albert")
+	b.Put(24, "Poul")
+	b.Put(23, "Ole")
+	b.Put(25, "Pernille")
+	b.Put(20, "Birgit")
+	b.Put(21, "Peter")
+	keys, err1 := b.GetAllKeys()
+	vals, err2 := b.GetAllValues()
+	m, err3 := b.Mapify()
+	if err1 != nil {
+		t.Errorf("Something went wrong")
+	}
+	if err2 != nil {
+		t.Errorf("Something went wrong")
+	}
+	if err3 != nil {
+		t.Errorf("Something went wrong")
+	}
+
+	for i := 0; i < len(keys); i++ {
+		key := keys[i]
+		val := vals[i]
+		if m[key] != val {
+			t.Errorf("Mapify failed, expected: %v, got: %v", val, m[key])
+		}
 	}
 }

@@ -318,25 +318,71 @@ func (self *BST[K, T]) GetKeysInRange(lo K, hi K) ([]K, error) {
 		return nil, errors.New("the low key is greater than the high key")
 	}
 	var arr []K
-	keys(self.root, &arr, lo, hi)
+	var tmp []T
+	keys(self.root, &arr, &tmp, lo, hi)
 	return arr, nil
 }
 
-func keys[K constraints.Ordered, T any](node *node[K, T], list *[]K, lo K, hi K) {
+func keys[K constraints.Ordered, T any](node *node[K, T], listKeys *[]K, listValues *[]T, lo K, hi K) {
 	if node == nil {
 		return
 	}
 	if lo < node.Key {
-		keys(node.Left, list, lo, hi)
+		keys(node.Left, listKeys, listValues, lo, hi)
 	}
 	if lo <= node.Key && hi >= node.Key {
-		*list = append(*list, node.Key)
+		*listKeys = append(*listKeys, node.Key)
+		*listValues = append(*listValues, node.Value)
 	}
 	if hi > node.Key {
-		keys(node.Right, list, lo, hi)
+		keys(node.Right, listKeys, listValues, lo, hi)
 	}
 }
 
 func (self *BST[K, T]) IsEmpty() bool {
 	return self.root == nil
+}
+
+func (self *BST[K, T]) GetAllValues() ([]T, error) {
+	if self.root == nil {
+		return nil, errors.New("the tree is empty")
+	}
+	min, err := self.Min()
+	max, err2 := self.Max()
+	if err != nil {
+		return nil, err
+	}
+	if err2 != nil {
+		return nil, err2
+	}
+	var list []T
+	var tmp []K
+	keys(self.root, &tmp, &list, min, max)
+	return list, nil
+}
+
+func (self *BST[K, T]) Mapify() (map[K]T, error) {
+	if self.root == nil {
+		return nil, errors.New("the tree is empty")
+	}
+
+	min, err := self.Min()
+	max, err2 := self.Max()
+	if err != nil {
+		return nil, err
+	}
+	if err2 != nil {
+		return nil, err2
+	}
+
+	var allkeys []K
+	var allvalues []T
+	keys(self.root, &allkeys, &allvalues, min, max)
+	ret := make(map[K]T)
+
+	for i := 0; i < len(allkeys); i++ {
+		ret[allkeys[i]] = allvalues[i]
+	}
+
+	return ret, nil
 }

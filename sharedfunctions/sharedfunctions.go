@@ -1,6 +1,7 @@
 package sharedfunctions
 
 import (
+	"errors"
 	"math"
 	"math/rand"
 
@@ -42,4 +43,16 @@ func Shuffle[T any](arr *[]T) {
 		j := rand.Intn(i + 1)
 		Exchange(arr, i, j)
 	}
+}
+
+func Zip[T any](arr1 *[]T, arr2 *[]T) ([]T, error) {
+	if len(*arr1) != len(*arr2) {
+		return nil, errors.New("arrays have different lengths")
+	}
+	result := make([]T, len(*arr1)+len(*arr2))
+	for i := 0; i < len(*arr1); i += 2 {
+		result[i] = (*arr1)[i]
+		result[i+1] = (*arr2)[i]
+	}
+	return result, nil
 }
