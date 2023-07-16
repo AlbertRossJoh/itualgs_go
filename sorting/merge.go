@@ -5,13 +5,15 @@ import (
 )
 
 func MergeSort[T constraints.Ordered](arr *[]T) {
-	aux := *arr
-	sort(arr, &aux, 0, len(*arr)-1)
+	var aux []T
+	for _, elm := range *arr {
+		aux = append(aux, elm)
+	}
+	sort(&aux, arr, 0, len(*arr)-1)
 }
 
 func merge[T constraints.Ordered](src *[]T, dst *[]T, lo int, mid int, hi int) {
-	i := lo
-	j := mid + 1
+	i, j := lo, mid+1
 	for k := lo; k <= hi; k++ {
 		if i > mid {
 			(*dst)[k] = (*src)[j]
@@ -19,7 +21,7 @@ func merge[T constraints.Ordered](src *[]T, dst *[]T, lo int, mid int, hi int) {
 		} else if j > hi {
 			(*dst)[k] = (*src)[i]
 			i++
-		} else if (*src)[i] < (*src)[j] {
+		} else if (*src)[i] > (*src)[j] {
 			(*dst)[k] = (*src)[j]
 			j++
 		} else {
@@ -31,15 +33,15 @@ func merge[T constraints.Ordered](src *[]T, dst *[]T, lo int, mid int, hi int) {
 
 func sort[T constraints.Ordered](src *[]T, dst *[]T, lo int, hi int) {
 	if hi <= lo+7 {
-		InsertionRangeSort(src, lo, hi)
+		insertionSort(dst, lo, hi)
 		return
 	}
 
 	mid := lo + (hi-lo)/2
-	sort(src, dst, lo, mid)
-	sort(src, dst, mid+1, hi)
+	sort(dst, src, lo, mid)
+	sort(dst, src, mid+1, hi)
 
-	if (*src)[mid] <= (*src)[mid+1] {
+	if !((*src)[mid+1] < (*src)[mid]) {
 		for i := lo; i <= hi; i++ {
 			(*dst)[i] = (*src)[i]
 		}
@@ -47,4 +49,18 @@ func sort[T constraints.Ordered](src *[]T, dst *[]T, lo int, hi int) {
 	}
 
 	merge(src, dst, lo, mid, hi)
+}
+
+func insertionSort[T constraints.Ordered](arr *[]T, lo int, hi int) {
+	for i := lo; i <= hi; i++ {
+		for j := i; j > lo && (*arr)[j] < (*arr)[j-1]; j-- {
+			(*arr)[j], (*arr)[j-1] = (*arr)[j-1], (*arr)[j]
+		}
+	}
+}
+
+func copyRange[T constraints.Ordered](src *[]T, dst *[]T, lo int, hi int) {
+	for i := lo; i <= hi; i++ {
+		(*src)[i] = (*dst)[i]
+	}
 }
