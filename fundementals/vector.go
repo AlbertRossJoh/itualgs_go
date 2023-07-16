@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"github.com/AlbertRossJoh/itualgs_go/customerrors"
+	utils "github.com/AlbertRossJoh/itualgs_go/sharedfunctions"
 )
 
 type Vector struct {
@@ -19,7 +20,7 @@ func NewVector(dimension int) Vector {
 	}
 }
 
-func NewVectorFromArray(array *[]float64) Vector {
+func CreateVectorFromArray(array *[]float64) Vector {
 	if array == nil {
 		panic("Nil value provided for array")
 	}
@@ -98,7 +99,7 @@ func (v Vector) Equals(other Vector) bool {
 		return false
 	}
 	for i := 0; i < v.dimension; i++ {
-		if (*v.elements)[i] != (*other.elements)[i] {
+		if !utils.IsClose((*v.elements)[i], (*other.elements)[i]) {
 			return false
 		}
 	}

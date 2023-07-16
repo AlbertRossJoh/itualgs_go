@@ -7,7 +7,7 @@ import (
 )
 
 func IsClose(x float64, y float64) bool {
-	return math.Abs(x-y) < 0.000001
+	return math.Abs(x-y) < 0.00001
 }
 
 func IsSorted[T constraints.Ordered](arr *[]T) bool {

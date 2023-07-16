@@ -12,7 +12,7 @@ type Matrix struct {
 	Data *[][]float64
 }
 
-func CreateFromArray(arr *[][]float64) *Matrix {
+func CreateMatrixFromArray(arr *[][]float64) *Matrix {
 	if arr == nil {
 		panic("Array is nil")
 	}
@@ -43,7 +43,7 @@ func NewIdentityMatrix(n int) Matrix {
 	return m
 }
 
-func (m Matrix) AugmentRight(v Vector) {
+func (m *Matrix) AugmentRight(v Vector) {
 	if v.Dimension() != m.Rows {
 		panic("Dimension mismatch")
 	}
@@ -54,9 +54,10 @@ func (m Matrix) AugmentRight(v Vector) {
 		}
 		(*tmp.Data)[i][m.Cols] = (*v.elements)[i]
 	}
+	m.Rows, m.Cols, m.Data = tmp.Rows, tmp.Cols, tmp.Data
 }
 
-func (m Matrix) VectorProduct(v Vector) Vector {
+func (m *Matrix) MatrixVectorProduct(v Vector) Vector {
 	tmp := NewVector(m.Rows)
 	for i := 0; i < m.Rows; i++ {
 		for j := 0; j < m.Cols; j++ {
@@ -80,7 +81,7 @@ func (m *Matrix) Product(n *Matrix) *Matrix {
 	tmp := NewMatrix(m.Rows, n.Cols)
 	for i := 0; i < m.Rows; i++ {
 		for j := 0; j < n.Cols; j++ {
-			for k := 0; k < m.Rows; k++ {
+			for k := 0; k < n.Rows; k++ {
 				(*tmp.Data)[i][j] += (*m.Data)[i][k] * (*n.Data)[k][j]
 			}
 		}
@@ -88,7 +89,7 @@ func (m *Matrix) Product(n *Matrix) *Matrix {
 	return &tmp
 }
 
-func (m Matrix) IsSquare() bool {
+func (m *Matrix) IsSquare() bool {
 	return m.Rows == m.Cols
 }
 
@@ -100,7 +101,7 @@ func (m *Matrix) Power(power int) {
 	m.Data = acc.Data
 }
 
-func (m Matrix) RowReplacement(i int, j int, num float64) {
+func (m *Matrix) RowReplacement(i int, j int, num float64) {
 	if i != j {
 		for k := 0; k < m.Cols; k++ {
 			(*m.Data)[i][k] = (*m.Data)[j][k]*num + (*m.Data)[i][k]
@@ -108,7 +109,7 @@ func (m Matrix) RowReplacement(i int, j int, num float64) {
 	}
 }
 
-func (m Matrix) RowInterchange(row1 int, row2 int) {
+func (m *Matrix) RowInterchange(row1 int, row2 int) {
 	acc := make([]float64, m.Cols)
 	for k := 0; k < m.Cols; k++ {
 		acc[k] = (*m.Data)[row1][k]
@@ -117,20 +118,20 @@ func (m Matrix) RowInterchange(row1 int, row2 int) {
 	}
 }
 
-func (m Matrix) RowScaling(row int, num float64) {
+func (m *Matrix) RowScaling(row int, num float64) {
 	for k := 0; k < m.Cols; k++ {
 		(*m.Data)[row][k] *= num
 	}
 }
 
-func (m Matrix) ForwardReduction() {
+func (m *Matrix) ForwardReduction() {
 	row := 0
 	for i := 0; i < m.Cols; i++ {
 		for j := row; j < m.Rows; j++ {
 			if !util.IsClose((*m.Data)[row][i], 0) && m.isZeroColumn(i) {
 				m.RowInterchange(row, j)
-				for k := row + 1; k < m.Rows; k++ {
-					m.RowReplacement(k, j, (*m.Data)[k][j]/(*m.Data)[j][j])
+				for k := j + 1; k < m.Rows; k++ {
+					m.RowReplacement(k, j, -(*m.Data)[k][i]/(*m.Data)[row][i])
 				}
 				row++
 				break
@@ -139,7 +140,7 @@ func (m Matrix) ForwardReduction() {
 	}
 }
 
-func (m Matrix) BackwardReduction() {
+func (m *Matrix) BackwardReduction() {
 	for i := m.Rows - 1; i >= 0; i-- {
 		for j := 0; j < m.Cols; j++ {
 			if !util.IsClose((*m.Data)[i][j], 0) {
@@ -162,8 +163,7 @@ func (m Matrix) isZeroColumn(col int) bool {
 	return false
 }
 
-func (m Matrix) GaussElimination() Vector {
-	v := NewVector(m.Rows)
+func (m *Matrix) GaussElimination(v Vector) Vector {
 	tmp := m
 	tmp.AugmentRight(v)
 	tmp.ForwardReduction()
@@ -182,16 +182,16 @@ func (m Matrix) ExtractColumn(col int) Vector {
 	return acc
 }
 
-func (m Matrix) ComputeInverse() *Matrix {
+func (m *Matrix) ComputeInverse() *Matrix {
 	if !m.IsSquare() {
 		panic("Matrix is not square")
 	}
 	identity := NewIdentityMatrix(m.Rows)
-	dummy := m
+	dummy := clone(m)
 	row := 0
 	for i := 0; i < m.Cols; i++ {
 		for j := row; j < m.Rows; j++ {
-			if !util.IsClose((*m.Data)[j][i], 0) {
+			if !util.IsClose((*dummy.Data)[j][i], 0) {
 				dummy.RowInterchange(row, j)
 				identity.RowInterchange(row, j)
 				for k := j + 1; k < m.Rows; k++ {
@@ -206,8 +206,8 @@ func (m Matrix) ComputeInverse() *Matrix {
 	}
 	for i := m.Rows - 1; i >= 0; i-- {
 		for j := 0; j < m.Cols; j++ {
-			if !util.IsClose((*m.Data)[i][j], 0) {
-				scale := 1 / (*m.Data)[i][j]
+			if !util.IsClose((*dummy.Data)[i][j], 0) {
+				scale := 1 / (*dummy.Data)[i][j]
 				dummy.RowScaling(i, scale)
 				identity.RowScaling(i, scale)
 				for k := i; k >= 0; k-- {
@@ -270,4 +270,14 @@ func (m *Matrix) Determinant() float64 {
 		ans += math.Pow(-1, float64(i+2)) * (*m.Data)[0][i] * det
 	}
 	return ans
+}
+
+func clone(m *Matrix) *Matrix {
+	tmp := NewMatrix(m.Rows, m.Cols)
+	for i := 0; i < m.Rows; i++ {
+		for j := 0; j < m.Cols; j++ {
+			(*tmp.Data)[i][j] = (*m.Data)[i][j]
+		}
+	}
+	return &tmp
 }

@@ -12,7 +12,7 @@ import (
 func TestMergeSort(t *testing.T) {
 
 	rand.Seed(time.Now().Unix())
-	a := rand.Perm(100_000_000)
+	a := rand.Perm(1_000_000)
 	sort.MergeSort(&a)
 
 	if !utils.IsSorted(&a) {

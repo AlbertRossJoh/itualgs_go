@@ -29,7 +29,7 @@ func TestNewMatrix2(t *testing.T) {
 		{-3, 3, 15},
 		{1, -1, 7},
 	}
-	m := fund.CreateFromArray(&a)
+	m := fund.CreateMatrixFromArray(&a)
 
 	(*m.Data)[0][0] = 1
 	(*m.Data)[0][1] = 5
@@ -57,8 +57,8 @@ func TestTranspose(t *testing.T) {
 		{2, -2, 3, -1},
 		{-5, -13, 15, 7},
 	}
-	m := fund.CreateFromArray(&a)
-	k := fund.CreateFromArray(&b)
+	m := fund.CreateMatrixFromArray(&a)
+	k := fund.CreateMatrixFromArray(&b)
 	m.Transpose()
 
 	if !m.IsEqual(*k) {
@@ -79,8 +79,8 @@ func TestPower(t *testing.T) {
 		{-106, -194, 201},
 	}
 
-	m := fund.CreateFromArray(&a)
-	k := fund.CreateFromArray(&b)
+	m := fund.CreateMatrixFromArray(&a)
+	k := fund.CreateMatrixFromArray(&b)
 	m.Power(2)
 
 	if !m.IsEqual(*k) {
@@ -96,7 +96,7 @@ func TestDeterminant(t *testing.T) {
 		{-5, -13, 15},
 	}
 
-	m := fund.CreateFromArray(&a)
+	m := fund.CreateMatrixFromArray(&a)
 
 	if m.Determinant() != -108 {
 		panic("Transpose does not work")
@@ -111,11 +111,100 @@ func TestInverse(t *testing.T) {
 		{-5, -13, 15},
 	}
 
-	m := fund.CreateFromArray(&a)
-	dummy := m
+	m := fund.CreateMatrixFromArray(&a)
+	dummy := *m
 	k := fund.NewIdentityMatrix(3)
-	res := m.ComputeInverse().Product(dummy)
-	if res.IsEqual(k) {
-		panic("Inverse does not work")
+	res := (m.ComputeInverse())
+	res = res.Product(&dummy)
+	if !res.IsEqual(k) {
+		t.Errorf("Inverse does not work, expected %v got %v", k.Data, res.Data)
+	}
+}
+
+func TestProduct(t *testing.T) {
+	a := fund.CreateMatrixFromArray(&prod_testa)
+	b := fund.CreateMatrixFromArray(&prod_testb)
+	expected := fund.CreateMatrixFromArray(&prod_test_res)
+
+	res := a.Product(b)
+
+	if !res.IsEqual(*expected) {
+		panic("Product does not work")
+	}
+}
+
+func TestMatrixVectorProduct(t *testing.T) {
+	a := fund.CreateMatrixFromArray(&mat_vec_prod_test_mat)
+	b := fund.CreateVectorFromArray(&mat_vec_prod_test_vec)
+	expected := fund.CreateVectorFromArray(&mat_vec_prod_test_res)
+	res := a.MatrixVectorProduct(b)
+	if !res.Equals(expected) {
+		t.Error("Matrix vector product does not work, expected ", expected.Elements(), " got ", res.Elements())
+	}
+}
+
+func TestMatrixRowReplacement(t *testing.T) {
+	a := fund.CreateMatrixFromArray(&mat_row_replace_test_mat)
+	res := fund.CreateMatrixFromArray(&mat_row_replace_test_res)
+	a.RowReplacement(
+		int(mat_row_replace_test_rows[0]),
+		int(mat_row_replace_test_rows[1]),
+		mat_row_replace_test_val)
+
+	if !a.IsEqual(*res) {
+		t.Error("Matrix row replacement does not work, expected ", res.Data, " got ", a.Data)
+	}
+}
+
+func TestMatrixRowInterchange(t *testing.T) {
+	a := fund.CreateMatrixFromArray(&mat_row_interchange_test_mat)
+	res := fund.CreateMatrixFromArray(&mat_row_interchange_test_res)
+	a.RowInterchange(int(mat_row_interchange_test_rows[0]), int(mat_row_interchange_test_rows[1]))
+
+	if !a.IsEqual(*res) {
+		t.Error("Matrix row interchange does not work, expected ", res.Data, " got ", a.Data)
+	}
+}
+
+func TestMatrixAugmentRight(t *testing.T) {
+	a := fund.CreateMatrixFromArray(&aug_right_test_mat)
+	b := fund.CreateVectorFromArray(&aug_right_test_vec)
+
+	expected := fund.CreateMatrixFromArray(&aug_right_test_res)
+
+	a.AugmentRight(b)
+
+	var collected []float64
+
+	for i := 0; i < a.Rows; i++ {
+		collected = append(collected, (*a.Data)[i][a.Cols-1])
+	}
+
+	if !a.IsEqual(*expected) {
+		t.Error("Matrix augment right does not work, expected ", b.Elements(), " got ", collected)
+	}
+}
+
+func TestMatrixForwardReduction(t *testing.T) {
+	a := fund.CreateMatrixFromArray(&forward_reduction_test_mat)
+
+	expected := fund.CreateMatrixFromArray(&forward_reduction_test_res)
+
+	a.ForwardReduction()
+
+	if !a.IsEqual(*expected) {
+		t.Error("Matrix forward reduction does not work, expected ", expected.Data, " got ", a.Data)
+	}
+}
+
+func TestMatrixGaussianElimination(t *testing.T) {
+	a := fund.CreateMatrixFromArray(&gauss_test_mat)
+	b := fund.CreateVectorFromArray(&gauss_test_vec)
+	expected := fund.CreateVectorFromArray(&gauss_test_res)
+
+	res := a.GaussElimination(b)
+
+	if !res.Equals(expected) {
+		t.Error("Gaussian elimination does not work, expected ", expected.Elements(), " got ", res.Elements())
 	}
 }
