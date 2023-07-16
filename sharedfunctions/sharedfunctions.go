@@ -2,6 +2,7 @@ package sharedfunctions
 
 import (
 	"math"
+	"math/rand"
 
 	"golang.org/x/exp/constraints"
 )
@@ -30,4 +31,15 @@ func CompareArrays[T comparable](arr1 *[]T, arr2 *[]T) bool {
 		}
 	}
 	return true
+}
+
+func Exchange[T any](arr *[]T, i int, j int) {
+	(*arr)[i], (*arr)[j] = (*arr)[j], (*arr)[i]
+}
+
+func Shuffle[T any](arr *[]T) {
+	for i := 0; i < len(*arr); i++ {
+		j := rand.Intn(i + 1)
+		Exchange(arr, i, j)
+	}
 }
