@@ -26,6 +26,10 @@ func NewBST[K constraints.Ordered, T any](key K, val T) BST[K, T] {
 	}}
 }
 
+func NewEmptyBST[K constraints.Ordered, T any](key K, val T) BST[K, T] {
+	return BST[K, T]{nil}
+}
+
 func (self *BST[K, T]) Put(key K, val T) {
 	node := &node[K, T]{
 		Value: val,
