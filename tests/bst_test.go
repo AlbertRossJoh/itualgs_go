@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	bst "github.com/AlbertRossJoh/itualgs_go/searching"
+	utils "github.com/AlbertRossJoh/itualgs_go/sharedfunctions"
 )
 
 func TestNewBST(t *testing.T) {
@@ -82,10 +83,98 @@ func TestDeleteMin(t *testing.T) {
 	b.Put(21, "Peter")
 	b.DeleteMin()
 
-	_, err := b.Get(20)
+	val, err := b.Get(20)
 
 	if err == nil {
-		t.Errorf("Value was not deleted correctly")
+		t.Errorf("minvalue was not deleted correctly, value recieved: %v", val)
 	}
 
+}
+
+func TestDeleteMax(t *testing.T) {
+	b := bst.NewBST[int32, string](22, "Albert")
+	b.Put(24, "Poul")
+	b.Put(23, "Ole")
+	b.Put(25, "Pernille")
+	b.Put(20, "Birgit")
+	b.Put(21, "Peter")
+	b.DeleteMax()
+
+	val, err := b.Get(25)
+
+	if err == nil {
+		t.Errorf("maxvalue was not deleted correctly, val recieved: %v", val)
+	}
+
+}
+
+func TestGetAllKeys(t *testing.T) {
+	b := bst.NewBST[int32, string](22, "Albert")
+	b.Put(24, "Poul")
+	b.Put(23, "Ole")
+	b.Put(25, "Pernille")
+	b.Put(20, "Birgit")
+	b.Put(21, "Peter")
+	arr, err1 := b.GetAllKeys()
+
+	if err1 != nil {
+		t.Errorf("Something went wrong")
+	}
+
+	expected := []int32{20, 21, 22, 23, 24, 25}
+	_, err := b.Get(25)
+
+	if err != nil {
+		t.Errorf("The tree got fucked up")
+	}
+
+	if !utils.CompareArrays(&arr, &expected) {
+		t.Errorf("The array from the bst is not returned correctly, expected: %v, got: %v", expected, arr)
+	}
+
+}
+
+func TestGetAllKeysFromSingleTree(t *testing.T) {
+	b := bst.NewBST[int32, string](22, "Albert")
+	arr, err1 := b.GetAllKeys()
+
+	if err1 != nil {
+		t.Errorf("Something went wrong")
+	}
+
+	expected := []int32{22}
+	_, err := b.Get(22)
+
+	if err != nil {
+		t.Errorf("The tree got fucked up")
+	}
+
+	if !utils.CompareArrays(&arr, &expected) {
+		t.Errorf("The array from the bst is not returned correctly, expected: %v, got: %v", expected, arr)
+	}
+
+}
+
+func TestDeleteFromEmptyTree(t *testing.T) {
+	b := bst.BST[int, int]{}
+
+	defer func() {
+		if err := recover(); err == nil {
+			t.Errorf("The function should cause the program to panic")
+		}
+	}()
+	b.DeleteMax()
+}
+
+func TestDeleteLastKey(t *testing.T) {
+	b := bst.NewBST[int32, string](22, "Albert")
+	str, err1 := b.Delete(22)
+
+	if err1 != nil || str != "Albert" {
+		t.Errorf("Something went wrong")
+	}
+
+	if !b.IsEmpty() {
+		t.Errorf("The tree should be empty")
+	}
 }

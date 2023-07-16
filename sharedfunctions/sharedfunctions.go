@@ -18,3 +18,16 @@ func IsSorted[T constraints.Ordered](arr *[]T) bool {
 	}
 	return true
 }
+
+func CompareArrays[T comparable](arr1 *[]T, arr2 *[]T) bool {
+	if len(*arr1) != len(*arr2) {
+		return false
+	}
+
+	for i := 0; i < len(*arr1); i++ {
+		if (*arr1)[i] != (*arr2)[i] {
+			return false
+		}
+	}
+	return true
+}
