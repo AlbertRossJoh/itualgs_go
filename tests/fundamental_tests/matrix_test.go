@@ -223,3 +223,14 @@ func TestGramSchmidt(t *testing.T) {
 		t.Error("Gram schmidt did not work, expected this upper matrix ", expected2.Data, " got ", res2.Data)
 	}
 }
+
+func TestLLL(t *testing.T) {
+	a := fund.CreateMatrixFromArray(&lll_test_mat)
+	expected := fund.CreateMatrixFromArray(&lll_test_res)
+
+	res := a.LLL()
+
+	if !a.IsEqual(res) {
+		t.Error("LLL did not work, expected ", expected, " got ", res)
+	}
+}

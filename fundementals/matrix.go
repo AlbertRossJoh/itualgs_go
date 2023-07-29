@@ -23,6 +23,21 @@ func CreateMatrixFromArray(arr *[][]float64) *Matrix {
 	}
 }
 
+func CreateMatrixFromArrayOfVectors(arr *[]Vector) *Matrix {
+	if arr == nil {
+		panic("Array is nil")
+	}
+	acc := make([][]float64, 0, len(*arr))
+	for _, v := range *arr {
+		acc = append(acc, *v.elements)
+	}
+	return &Matrix{
+		Rows: len(*arr),
+		Cols: (*arr)[0].Dimension(),
+		Data: &acc,
+	}
+}
+
 func NewMatrix(rows, cols int) Matrix {
 	m := make([][]float64, rows)
 	for i := 0; i < rows; i++ {
@@ -323,4 +338,50 @@ func (m *Matrix) GramSchmidt() (Matrix, Matrix) {
 		Q.RowScaling(i, 1/math.Sqrt(acc))
 	}
 	return Q.Transpose(), *Q.Product(m)
+}
+
+func (m *Matrix) NonNormalGS() Matrix {
+	tmp := *m
+	for i := 0; i < tmp.Rows; i++ {
+		var acc float64
+		for j := 0; j < tmp.Cols; j++ {
+			acc += math.Pow((*tmp.Data)[i][j], 2)
+		}
+		tmp.RowScaling(i, 1/math.Sqrt(acc))
+	}
+	return tmp
+}
+
+func (m *Matrix) LLL() Matrix {
+	res := m.NonNormalGS()
+	base := make([]Vector, 0, res.Rows)
+	for _, row := range *res.Data {
+		base = append(base, CreateVectorFromArray(&row))
+	}
+	k := 2
+
+	var mu = func(i int, j int) float64 {
+		valI := base[i]
+		valJ := base[j]
+		return (valI.Dot(valJ)) / (valI.Dot(valI))
+	}
+
+	for k < res.Rows {
+		for j := k - 1; j > 0; j-- {
+			currMU := mu(k, j)
+			if math.Abs(currMU) > 0.5 {
+				base[k].Sub(base[j].Multiply(currMU))
+				res = CreateMatrixFromArrayOfVectors(&base).NonNormalGS()
+			}
+		}
+		if base[k].Dot(base[k]) > (0.75-math.Pow(mu(k, k-1), 2))*base[k-1].Dot(base[k-1]) {
+			k++
+		} else {
+			base[k], base[k-1] = base[k-1], base[k]
+			k = int(math.Max(float64(k-1), 2))
+		}
+	}
+
+	// TODO : Return base
+	return res
 }
