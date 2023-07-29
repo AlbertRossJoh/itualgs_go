@@ -59,9 +59,9 @@ func TestTranspose(t *testing.T) {
 	}
 	m := fund.CreateMatrixFromArray(&a)
 	k := fund.CreateMatrixFromArray(&b)
-	m.Transpose()
+	res := m.Transpose()
 
-	if !m.IsEqual(*k) {
+	if !res.IsEqual(*k) {
 		panic("Transpose does not work")
 	}
 }
@@ -206,5 +206,20 @@ func TestMatrixGaussianElimination(t *testing.T) {
 
 	if !res.Equals(expected) {
 		t.Error("Gaussian elimination does not work, expected ", expected.Elements(), " got ", res.Elements())
+	}
+}
+
+func TestGramSchmidt(t *testing.T) {
+	a := fund.CreateMatrixFromArray(&gram_schmidt_test_mat)
+	expected1 := fund.CreateMatrixFromArray(&gram_schmidt_test_res_1)
+	expected2 := fund.CreateMatrixFromArray(&gram_schmidt_test_res_2)
+	res1, res2 := a.GramSchmidt()
+
+	if !res1.IsEqual(*expected1) {
+		t.Error("Gram schmidt did not work, expected this ortonormal matrix ", expected1.Data, " got ", res1.Data)
+	}
+
+	if !res2.IsEqual(*expected2) {
+		t.Error("Gram schmidt did not work, expected this upper matrix ", expected2.Data, " got ", res2.Data)
 	}
 }

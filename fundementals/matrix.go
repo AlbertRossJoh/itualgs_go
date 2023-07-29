@@ -67,14 +67,14 @@ func (m *Matrix) MatrixVectorProduct(v Vector) Vector {
 	return tmp
 }
 
-func (m *Matrix) Transpose() {
+func (m *Matrix) Transpose() Matrix {
 	tmp := NewMatrix(m.Cols, m.Rows)
 	for i := 0; i < m.Rows; i++ {
 		for j := 0; j < m.Cols; j++ {
 			(*tmp.Data)[j][i] = (*m.Data)[i][j]
 		}
 	}
-	m.Rows, m.Cols, m.Data = tmp.Rows, tmp.Cols, tmp.Data
+	return tmp
 }
 
 func (m *Matrix) Product(n *Matrix) *Matrix {
@@ -280,4 +280,47 @@ func clone(m *Matrix) *Matrix {
 		}
 	}
 	return &tmp
+}
+
+func (m *Matrix) OrthogonalBasis() Matrix {
+	B := NewMatrix(m.Rows, m.Cols)
+	acc := make([]Vector, 0, m.Cols)
+	first := NewVector(m.Rows)
+	for i := 0; i < m.Rows; i++ {
+		(*first.elements)[i] = (*m.Data)[i][0]
+		(*B.Data)[i][0] = (*m.Data)[i][0]
+	}
+	acc = append(acc, first)
+	for i := 1; i < m.Cols; i++ {
+		current := NewVector(m.Rows)
+		for j := 0; j < m.Rows; j++ {
+			(*current.elements)[j] = (*m.Data)[j][i]
+		}
+		subVector := NewVector(m.Rows)
+		for _, val := range acc {
+			if !util.IsClose((&current).Dot(val), 0) {
+				quotient := val.Multiply(-(val.Dot(current)) / val.Dot(val))
+				subVector.Add(quotient)
+			}
+		}
+		current.Add(subVector)
+		acc = append(acc, current)
+		for j := 0; j < m.Rows; j++ {
+			(*B.Data)[j][i] = (*current.elements)[j]
+		}
+	}
+	return B
+}
+
+func (m *Matrix) GramSchmidt() (Matrix, Matrix) {
+	Q := m.OrthogonalBasis()
+	Q = Q.Transpose()
+	for i := 0; i < Q.Rows; i++ {
+		var acc float64
+		for j := 0; j < Q.Cols; j++ {
+			acc += math.Pow((*Q.Data)[i][j], 2)
+		}
+		Q.RowScaling(i, 1/math.Sqrt(acc))
+	}
+	return Q.Transpose(), *Q.Product(m)
 }

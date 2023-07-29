@@ -79,10 +79,12 @@ func (v *Vector) Cartesian(i int) float64 {
 	return (*v.elements)[i]
 }
 
-func (v Vector) Multiply(scalar float64) {
+func (v *Vector) Multiply(scalar float64) Vector {
+	tmp := NewVector(v.dimension)
 	for i := 0; i < v.dimension; i++ {
-		(*v.elements)[i] = (*v.elements)[i] * scalar
+		(*tmp.elements)[i] = (*v.elements)[i] * scalar
 	}
+	return tmp
 }
 
 func (v Vector) Direction() (*Vector, error) {
