@@ -23,17 +23,17 @@ func CreateMatrixFromArray(arr *[][]float64) *Matrix {
 	}
 }
 
-func CreateMatrixFromArrayOfVectors(arr *[]Vector) *Matrix {
+func CreateMatrixFromArrayOfVectors(arr []Vector) *Matrix {
 	if arr == nil {
 		panic("Array is nil")
 	}
-	acc := make([][]float64, 0, len(*arr))
-	for _, v := range *arr {
+	acc := make([][]float64, 0, len(arr))
+	for _, v := range arr {
 		acc = append(acc, *v.elements)
 	}
 	return &Matrix{
-		Rows: len(*arr),
-		Cols: (*arr)[0].Dimension(),
+		Rows: len(arr),
+		Cols: arr[0].Dimension(),
 		Data: &acc,
 	}
 }
@@ -352,13 +352,31 @@ func (m *Matrix) NonNormalGS() Matrix {
 	return tmp
 }
 
-func (m *Matrix) LLL() Matrix {
-	res := m.NonNormalGS()
-	base := make([]Vector, 0, res.Rows)
-	for _, row := range *res.Data {
-		base = append(base, CreateVectorFromArray(&row))
+func vecArrGS(m *[]Vector) []Vector {
+	var ret []Vector
+	for _, valI := range *m {
+		row := valI
+		for _, col := range ret {
+			proj, err := col.Projection(valI)
+			if err != nil {
+				panic(err)
+			}
+			row.Sub(*proj)
+		}
+		if row.Magnitude() != 0 {
+			ret = append(ret, row)
+		}
 	}
-	k := 2
+	return ret
+}
+
+func (m *Matrix) LLL() Matrix {
+	base := make([]Vector, 0, m.Rows)
+	for _, row := range *m.Data {
+		base = append(base, CreateVectorFromArray(row))
+	}
+	res := vecArrGS(&base)
+	k := 1
 
 	var mu = func(i int, j int) float64 {
 		valI := base[i]
@@ -366,22 +384,22 @@ func (m *Matrix) LLL() Matrix {
 		return (valI.Dot(valJ)) / (valI.Dot(valI))
 	}
 
-	for k < res.Rows {
-		for j := k - 1; j > 0; j-- {
+	for k < len(res) {
+		for j := k - 1; j > -1; j-- {
 			currMU := mu(k, j)
 			if math.Abs(currMU) > 0.5 {
 				base[k].Sub(base[j].Multiply(currMU))
-				res = CreateMatrixFromArrayOfVectors(&base).NonNormalGS()
+				res = vecArrGS(&base)
 			}
 		}
 		if base[k].Dot(base[k]) > (0.75-math.Pow(mu(k, k-1), 2))*base[k-1].Dot(base[k-1]) {
 			k++
 		} else {
 			base[k], base[k-1] = base[k-1], base[k]
+			res = vecArrGS(&base)
 			k = int(math.Max(float64(k-1), 2))
 		}
 	}
 
-	// TODO : Return base
-	return res
+	return *CreateMatrixFromArrayOfVectors(base)
 }

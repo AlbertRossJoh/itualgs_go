@@ -20,13 +20,13 @@ func NewVector(dimension int) Vector {
 	}
 }
 
-func CreateVectorFromArray(array *[]float64) Vector {
+func CreateVectorFromArray(array []float64) Vector {
 	if array == nil {
 		panic("Nil value provided for array")
 	}
 	return Vector{
-		dimension: len(*array),
-		elements:  array,
+		dimension: len(array),
+		elements:  &array,
 	}
 }
 

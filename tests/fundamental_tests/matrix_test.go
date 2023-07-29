@@ -3,7 +3,7 @@ package tests
 import (
 	"testing"
 
-	fund "github.com/AlbertRossJoh/itualgs_go/fundementals"
+	fund "github.com/AlbertRossJoh/itualgs_go/fundamentals"
 )
 
 func TestNewMatrix(t *testing.T) {
@@ -135,8 +135,8 @@ func TestProduct(t *testing.T) {
 
 func TestMatrixVectorProduct(t *testing.T) {
 	a := fund.CreateMatrixFromArray(&mat_vec_prod_test_mat)
-	b := fund.CreateVectorFromArray(&mat_vec_prod_test_vec)
-	expected := fund.CreateVectorFromArray(&mat_vec_prod_test_res)
+	b := fund.CreateVectorFromArray(mat_vec_prod_test_vec)
+	expected := fund.CreateVectorFromArray(mat_vec_prod_test_res)
 	res := a.MatrixVectorProduct(b)
 	if !res.Equals(expected) {
 		t.Error("Matrix vector product does not work, expected ", expected.Elements(), " got ", res.Elements())
@@ -168,7 +168,7 @@ func TestMatrixRowInterchange(t *testing.T) {
 
 func TestMatrixAugmentRight(t *testing.T) {
 	a := fund.CreateMatrixFromArray(&aug_right_test_mat)
-	b := fund.CreateVectorFromArray(&aug_right_test_vec)
+	b := fund.CreateVectorFromArray(aug_right_test_vec)
 
 	expected := fund.CreateMatrixFromArray(&aug_right_test_res)
 
@@ -199,8 +199,8 @@ func TestMatrixForwardReduction(t *testing.T) {
 
 func TestMatrixGaussianElimination(t *testing.T) {
 	a := fund.CreateMatrixFromArray(&gauss_test_mat)
-	b := fund.CreateVectorFromArray(&gauss_test_vec)
-	expected := fund.CreateVectorFromArray(&gauss_test_res)
+	b := fund.CreateVectorFromArray(gauss_test_vec)
+	expected := fund.CreateVectorFromArray(gauss_test_res)
 
 	res := a.GaussElimination(b)
 
@@ -226,11 +226,21 @@ func TestGramSchmidt(t *testing.T) {
 
 func TestLLL(t *testing.T) {
 	a := fund.CreateMatrixFromArray(&lll_test_mat)
+
+	b := fund.CreateMatrixFromArray(&lll_test2_mat)
+
 	expected := fund.CreateMatrixFromArray(&lll_test_res)
+
+	expected2 := fund.CreateMatrixFromArray(&lll_test2_res)
 
 	res := a.LLL()
 
+	res2 := b.LLL()
+
 	if !a.IsEqual(res) {
 		t.Error("LLL did not work, expected ", expected, " got ", res)
+	}
+	if !b.IsEqual(res2) {
+		t.Error("LLL did not work, expected ", expected2, " got ", res2)
 	}
 }
