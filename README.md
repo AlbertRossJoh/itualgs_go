@@ -5,7 +5,7 @@
 `itualgs_go` should be for student currently wanting to learn algorithms specifically in go, but also specific users who might want to use the general purpose nature of this library.
 
 ## Affiliation with IT University of Copenhagen
-This project was created in 2023 a student from the IT University of Copenhagen (ITU). Please note that while we are affiliated with ITU as student, this project is not officially associated with or endorsed by the IT University of Copenhagen. It is an independent project conducted for educational purposes.
+This is an independent project conducted for educational purposes.
 
 ## Disclaimer
 If you're currently enrolled in an algorithms course you should always try to do the solution yourself before looking for the answer, but if you're stuck you're more than welcome to steal this code ;)
