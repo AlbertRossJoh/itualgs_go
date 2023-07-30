@@ -4,19 +4,19 @@ import (
 	"math"
 
 	"github.com/AlbertRossJoh/itualgs_go/customerrors"
-	utils "github.com/AlbertRossJoh/itualgs_go/sharedfunctions"
+	utils "github.com/AlbertRossJoh/itualgs_go/utilities"
 )
 
 type Vector struct {
 	dimension int
-	elements  *[]float64
+	Elements  *[]float64
 }
 
 func NewVector(dimension int) Vector {
 	arr := make([]float64, dimension)
 	return Vector{
 		dimension: dimension,
-		elements:  &arr,
+		Elements:  &arr,
 	}
 }
 
@@ -26,7 +26,7 @@ func CreateVectorFromArray(array []float64) Vector {
 	}
 	return Vector{
 		dimension: len(array),
-		elements:  &array,
+		Elements:  &array,
 	}
 }
 
@@ -34,27 +34,28 @@ func (v *Vector) Dimension() int {
 	return v.dimension
 }
 
-func (v *Vector) Elements() *[]float64 {
-	return v.elements
+// Returns a cloned slice of the Elements in a vector
+func (v *Vector) GetElements() []float64 {
+	return *v.Elements
 }
 
 func (v *Vector) Dot(other Vector) float64 {
 	var result float64
 	for i := 0; i < v.dimension; i++ {
-		result += (*v.elements)[i] * (*other.elements)[i]
+		result += (*v.Elements)[i] * (*other.Elements)[i]
 	}
 	return result
 }
 
 func (v *Vector) Add(other Vector) {
 	for i := 0; i < v.dimension; i++ {
-		(*v.elements)[i] += (*other.elements)[i]
+		(*v.Elements)[i] += (*other.Elements)[i]
 	}
 }
 
 func (v *Vector) Sub(other Vector) {
 	for i := 0; i < v.dimension; i++ {
-		(*v.elements)[i] -= (*other.elements)[i]
+		(*v.Elements)[i] -= (*other.Elements)[i]
 	}
 }
 
@@ -65,7 +66,7 @@ func (v *Vector) Magnitude() float64 {
 func (v *Vector) Normalize() {
 	magnitude := v.Magnitude()
 	for i := 0; i < v.dimension; i++ {
-		(*v.elements)[i] = (*v.elements)[i] / magnitude
+		(*v.Elements)[i] = (*v.Elements)[i] / magnitude
 	}
 }
 
@@ -76,13 +77,13 @@ func (v *Vector) DistanceTo(other *Vector) float64 {
 }
 
 func (v *Vector) Cartesian(i int) float64 {
-	return (*v.elements)[i]
+	return (*v.Elements)[i]
 }
 
 func (v *Vector) Multiply(scalar float64) Vector {
 	tmp := NewVector(v.dimension)
 	for i := 0; i < v.dimension; i++ {
-		(*tmp.elements)[i] = (*v.elements)[i] * scalar
+		(*tmp.Elements)[i] = (*v.Elements)[i] * scalar
 	}
 	return tmp
 }
@@ -101,7 +102,7 @@ func (v Vector) Equals(other Vector) bool {
 		return false
 	}
 	for i := 0; i < v.dimension; i++ {
-		if !utils.IsClose((*v.elements)[i], (*other.elements)[i]) {
+		if !utils.IsClose((*v.Elements)[i], (*other.Elements)[i]) {
 			return false
 		}
 	}
@@ -128,5 +129,5 @@ func (v Vector) Cross(other Vector) (float64, error) {
 	if v.dimension > 2 || other.dimension > 2 {
 		return 0, &customerrors.ErrVectorCross{}
 	}
-	return (*v.elements)[0]*(*other.elements)[1] - (*v.elements)[1]*(*other.elements)[0], nil
+	return (*v.Elements)[0]*(*other.Elements)[1] - (*v.Elements)[1]*(*other.Elements)[0], nil
 }

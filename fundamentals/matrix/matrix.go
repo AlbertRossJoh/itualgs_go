@@ -3,7 +3,8 @@ package fundementals
 import (
 	"math"
 
-	util "github.com/AlbertRossJoh/itualgs_go/sharedfunctions"
+	. "github.com/AlbertRossJoh/itualgs_go/fundamentals/vector"
+	util "github.com/AlbertRossJoh/itualgs_go/utilities"
 )
 
 type Matrix struct {
@@ -29,7 +30,7 @@ func CreateMatrixFromArrayOfVectors(arr []Vector) *Matrix {
 	}
 	acc := make([][]float64, 0, len(arr))
 	for _, v := range arr {
-		acc = append(acc, *v.elements)
+		acc = append(acc, *v.Elements)
 	}
 	return &Matrix{
 		Rows: len(arr),
@@ -67,7 +68,7 @@ func (m *Matrix) AugmentRight(v Vector) {
 		for j := 0; j < m.Cols; j++ {
 			(*tmp.Data)[i][j] = (*m.Data)[i][j]
 		}
-		(*tmp.Data)[i][m.Cols] = (*v.elements)[i]
+		(*tmp.Data)[i][m.Cols] = (*v.Elements)[i]
 	}
 	m.Rows, m.Cols, m.Data = tmp.Rows, tmp.Cols, tmp.Data
 }
@@ -76,7 +77,7 @@ func (m *Matrix) MatrixVectorProduct(v Vector) Vector {
 	tmp := NewVector(m.Rows)
 	for i := 0; i < m.Rows; i++ {
 		for j := 0; j < m.Cols; j++ {
-			(*tmp.elements)[i] += (*m.Data)[i][j] * (*v.elements)[j]
+			(*tmp.Elements)[i] += (*m.Data)[i][j] * (*v.Elements)[j]
 		}
 	}
 	return tmp
@@ -192,7 +193,7 @@ func (m Matrix) ExtractColumn(col int) Vector {
 	}
 	acc := NewVector(m.Rows)
 	for i := 0; i < m.Rows; i++ {
-		(*acc.elements)[i] = (*m.Data)[i][col]
+		(*acc.Elements)[i] = (*m.Data)[i][col]
 	}
 	return acc
 }
@@ -302,14 +303,14 @@ func (m *Matrix) OrthogonalBasis() Matrix {
 	acc := make([]Vector, 0, m.Cols)
 	first := NewVector(m.Rows)
 	for i := 0; i < m.Rows; i++ {
-		(*first.elements)[i] = (*m.Data)[i][0]
+		(*first.Elements)[i] = (*m.Data)[i][0]
 		(*B.Data)[i][0] = (*m.Data)[i][0]
 	}
 	acc = append(acc, first)
 	for i := 1; i < m.Cols; i++ {
 		current := NewVector(m.Rows)
 		for j := 0; j < m.Rows; j++ {
-			(*current.elements)[j] = (*m.Data)[j][i]
+			(*current.Elements)[j] = (*m.Data)[j][i]
 		}
 		subVector := NewVector(m.Rows)
 		for _, val := range acc {
@@ -321,7 +322,7 @@ func (m *Matrix) OrthogonalBasis() Matrix {
 		current.Add(subVector)
 		acc = append(acc, current)
 		for j := 0; j < m.Rows; j++ {
-			(*B.Data)[j][i] = (*current.elements)[j]
+			(*B.Data)[j][i] = (*current.Elements)[j]
 		}
 	}
 	return B

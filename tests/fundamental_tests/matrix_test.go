@@ -3,11 +3,12 @@ package tests
 import (
 	"testing"
 
-	fund "github.com/AlbertRossJoh/itualgs_go/fundamentals"
+	. "github.com/AlbertRossJoh/itualgs_go/fundamentals/matrix"
+	. "github.com/AlbertRossJoh/itualgs_go/fundamentals/vector"
 )
 
 func TestNewMatrix(t *testing.T) {
-	m := fund.NewMatrix(3, 3)
+	m := NewMatrix(3, 3)
 	(*m.Data)[0][0] = 1
 	(*m.Data)[0][1] = 1
 	if !m.IsSquare() {
@@ -29,7 +30,7 @@ func TestNewMatrix2(t *testing.T) {
 		{-3, 3, 15},
 		{1, -1, 7},
 	}
-	m := fund.CreateMatrixFromArray(&a)
+	m := CreateMatrixFromArray(&a)
 
 	(*m.Data)[0][0] = 1
 	(*m.Data)[0][1] = 5
@@ -57,8 +58,8 @@ func TestTranspose(t *testing.T) {
 		{2, -2, 3, -1},
 		{-5, -13, 15, 7},
 	}
-	m := fund.CreateMatrixFromArray(&a)
-	k := fund.CreateMatrixFromArray(&b)
+	m := CreateMatrixFromArray(&a)
+	k := CreateMatrixFromArray(&b)
 	res := m.Transpose()
 
 	if !res.IsEqual(*k) {
@@ -79,8 +80,8 @@ func TestPower(t *testing.T) {
 		{-106, -194, 201},
 	}
 
-	m := fund.CreateMatrixFromArray(&a)
-	k := fund.CreateMatrixFromArray(&b)
+	m := CreateMatrixFromArray(&a)
+	k := CreateMatrixFromArray(&b)
 	m.Power(2)
 
 	if !m.IsEqual(*k) {
@@ -96,7 +97,7 @@ func TestDeterminant(t *testing.T) {
 		{-5, -13, 15},
 	}
 
-	m := fund.CreateMatrixFromArray(&a)
+	m := CreateMatrixFromArray(&a)
 
 	if m.Determinant() != -108 {
 		panic("Transpose does not work")
@@ -111,9 +112,9 @@ func TestInverse(t *testing.T) {
 		{-5, -13, 15},
 	}
 
-	m := fund.CreateMatrixFromArray(&a)
+	m := CreateMatrixFromArray(&a)
 	dummy := *m
-	k := fund.NewIdentityMatrix(3)
+	k := NewIdentityMatrix(3)
 	res := (m.ComputeInverse())
 	res = res.Product(&dummy)
 	if !res.IsEqual(k) {
@@ -122,9 +123,9 @@ func TestInverse(t *testing.T) {
 }
 
 func TestProduct(t *testing.T) {
-	a := fund.CreateMatrixFromArray(&prod_testa)
-	b := fund.CreateMatrixFromArray(&prod_testb)
-	expected := fund.CreateMatrixFromArray(&prod_test_res)
+	a := CreateMatrixFromArray(&prod_testa)
+	b := CreateMatrixFromArray(&prod_testb)
+	expected := CreateMatrixFromArray(&prod_test_res)
 
 	res := a.Product(b)
 
@@ -134,18 +135,18 @@ func TestProduct(t *testing.T) {
 }
 
 func TestMatrixVectorProduct(t *testing.T) {
-	a := fund.CreateMatrixFromArray(&mat_vec_prod_test_mat)
-	b := fund.CreateVectorFromArray(mat_vec_prod_test_vec)
-	expected := fund.CreateVectorFromArray(mat_vec_prod_test_res)
+	a := CreateMatrixFromArray(&mat_vec_prod_test_mat)
+	b := CreateVectorFromArray(mat_vec_prod_test_vec)
+	expected := CreateVectorFromArray(mat_vec_prod_test_res)
 	res := a.MatrixVectorProduct(b)
 	if !res.Equals(expected) {
-		t.Error("Matrix vector product does not work, expected ", expected.Elements(), " got ", res.Elements())
+		t.Error("Matrix vector product does not work, expected ", expected.GetElements(), " got ", res.GetElements())
 	}
 }
 
 func TestMatrixRowReplacement(t *testing.T) {
-	a := fund.CreateMatrixFromArray(&mat_row_replace_test_mat)
-	res := fund.CreateMatrixFromArray(&mat_row_replace_test_res)
+	a := CreateMatrixFromArray(&mat_row_replace_test_mat)
+	res := CreateMatrixFromArray(&mat_row_replace_test_res)
 	a.RowReplacement(
 		int(mat_row_replace_test_rows[0]),
 		int(mat_row_replace_test_rows[1]),
@@ -157,8 +158,8 @@ func TestMatrixRowReplacement(t *testing.T) {
 }
 
 func TestMatrixRowInterchange(t *testing.T) {
-	a := fund.CreateMatrixFromArray(&mat_row_interchange_test_mat)
-	res := fund.CreateMatrixFromArray(&mat_row_interchange_test_res)
+	a := CreateMatrixFromArray(&mat_row_interchange_test_mat)
+	res := CreateMatrixFromArray(&mat_row_interchange_test_res)
 	a.RowInterchange(int(mat_row_interchange_test_rows[0]), int(mat_row_interchange_test_rows[1]))
 
 	if !a.IsEqual(*res) {
@@ -167,10 +168,10 @@ func TestMatrixRowInterchange(t *testing.T) {
 }
 
 func TestMatrixAugmentRight(t *testing.T) {
-	a := fund.CreateMatrixFromArray(&aug_right_test_mat)
-	b := fund.CreateVectorFromArray(aug_right_test_vec)
+	a := CreateMatrixFromArray(&aug_right_test_mat)
+	b := CreateVectorFromArray(aug_right_test_vec)
 
-	expected := fund.CreateMatrixFromArray(&aug_right_test_res)
+	expected := CreateMatrixFromArray(&aug_right_test_res)
 
 	a.AugmentRight(b)
 
@@ -181,14 +182,14 @@ func TestMatrixAugmentRight(t *testing.T) {
 	}
 
 	if !a.IsEqual(*expected) {
-		t.Error("Matrix augment right does not work, expected ", b.Elements(), " got ", collected)
+		t.Error("Matrix augment right does not work, expected ", b.GetElements(), " got ", collected)
 	}
 }
 
 func TestMatrixForwardReduction(t *testing.T) {
-	a := fund.CreateMatrixFromArray(&forward_reduction_test_mat)
+	a := CreateMatrixFromArray(&forward_reduction_test_mat)
 
-	expected := fund.CreateMatrixFromArray(&forward_reduction_test_res)
+	expected := CreateMatrixFromArray(&forward_reduction_test_res)
 
 	a.ForwardReduction()
 
@@ -198,21 +199,21 @@ func TestMatrixForwardReduction(t *testing.T) {
 }
 
 func TestMatrixGaussianElimination(t *testing.T) {
-	a := fund.CreateMatrixFromArray(&gauss_test_mat)
-	b := fund.CreateVectorFromArray(gauss_test_vec)
-	expected := fund.CreateVectorFromArray(gauss_test_res)
+	a := CreateMatrixFromArray(&gauss_test_mat)
+	b := CreateVectorFromArray(gauss_test_vec)
+	expected := CreateVectorFromArray(gauss_test_res)
 
 	res := a.GaussElimination(b)
 
 	if !res.Equals(expected) {
-		t.Error("Gaussian elimination does not work, expected ", expected.Elements(), " got ", res.Elements())
+		t.Error("Gaussian elimination does not work, expected ", expected.GetElements(), " got ", res.GetElements())
 	}
 }
 
 func TestGramSchmidt(t *testing.T) {
-	a := fund.CreateMatrixFromArray(&gram_schmidt_test_mat)
-	expected1 := fund.CreateMatrixFromArray(&gram_schmidt_test_res_1)
-	expected2 := fund.CreateMatrixFromArray(&gram_schmidt_test_res_2)
+	a := CreateMatrixFromArray(&gram_schmidt_test_mat)
+	expected1 := CreateMatrixFromArray(&gram_schmidt_test_res_1)
+	expected2 := CreateMatrixFromArray(&gram_schmidt_test_res_2)
 	res1, res2 := a.GramSchmidt()
 
 	if !res1.IsEqual(*expected1) {
@@ -225,13 +226,13 @@ func TestGramSchmidt(t *testing.T) {
 }
 
 func TestLLL(t *testing.T) {
-	a := fund.CreateMatrixFromArray(&lll_test_mat)
+	a := CreateMatrixFromArray(&lll_test_mat)
 
-	b := fund.CreateMatrixFromArray(&lll_test2_mat)
+	b := CreateMatrixFromArray(&lll_test2_mat)
 
-	expected := fund.CreateMatrixFromArray(&lll_test_res)
+	expected := CreateMatrixFromArray(&lll_test_res)
 
-	expected2 := fund.CreateMatrixFromArray(&lll_test2_res)
+	expected2 := CreateMatrixFromArray(&lll_test2_res)
 
 	res := a.LLL()
 

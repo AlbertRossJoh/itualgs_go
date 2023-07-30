@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	utils "github.com/AlbertRossJoh/itualgs_go/sharedfunctions"
 	sort "github.com/AlbertRossJoh/itualgs_go/sorting"
+	utils "github.com/AlbertRossJoh/itualgs_go/utilities"
 )
 
 func TestMergeSort(t *testing.T) {

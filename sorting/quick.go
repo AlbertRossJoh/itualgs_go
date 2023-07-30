@@ -1,12 +1,12 @@
 package sorting
 
 import (
-	utils "github.com/AlbertRossJoh/itualgs_go/sharedfunctions"
+	. "github.com/AlbertRossJoh/itualgs_go/utilities"
 	"golang.org/x/exp/constraints"
 )
 
 func QuickSort[T constraints.Ordered](arr *[]T) {
-	utils.Shuffle(arr)
+	Shuffle(arr)
 	quickSort(arr, 0, len(*arr)-1)
 }
 
@@ -20,7 +20,7 @@ func quickSort[T constraints.Ordered](arr *[]T, low, high int) {
 }
 
 func QuickSelect[T constraints.Ordered](arr *[]T, k int) T {
-	utils.Shuffle(arr)
+	Shuffle(arr)
 	lo, hi := 0, len(*arr)-1
 	for lo < hi {
 		i := partition(arr, lo, hi)
@@ -57,10 +57,10 @@ func partition[T constraints.Ordered](arr *[]T, low, high int) int {
 			break
 		}
 
-		utils.Exchange(arr, i, j)
+		Exchange(arr, i, j)
 	}
 
-	utils.Exchange(arr, low, j)
+	Exchange(arr, low, j)
 
 	return j
 }
