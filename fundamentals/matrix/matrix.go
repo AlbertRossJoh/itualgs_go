@@ -353,15 +353,12 @@ func (m *Matrix) NonNormalGS() Matrix {
 	return tmp
 }
 
-func vecArrGS(m *[]Vector) []Vector {
-	var ret []Vector
+func vecArrGS(m *[]Vector) []*Vector {
+	var ret []*Vector
 	for _, valI := range *m {
-		elms := valI.GetElements()
-		clone := make([]float64, len(elms))
-		copy(clone, elms)
-		row := CreateVectorFromArray(clone)
-		for _, col := range ret {
-			proj, err := col.Projection(valI)
+		row := valI.Clone()
+		for _, vec := range ret {
+			proj, err := vec.Projection(valI)
 			if err != nil {
 				panic(err)
 			}
@@ -374,6 +371,7 @@ func vecArrGS(m *[]Vector) []Vector {
 	return ret
 }
 
+// Something is wrong with this function do not use
 func (m *Matrix) LLL() Matrix {
 	base := make([]Vector, 0, m.Rows)
 	for _, row := range *m.Data {
