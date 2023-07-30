@@ -88,6 +88,12 @@ func (v *Vector) Multiply(scalar float64) {
 	}
 }
 
+func Multiply(v Vector, scalar float64) Vector {
+	tmp := v.Clone()
+	tmp.Multiply(scalar)
+	return *tmp
+}
+
 // Returns a vector with the same direction as the vector but with a magnitude of 1
 func (v *Vector) Direction() (*Vector, error) {
 	if v.Magnitude() == 0 {
@@ -121,9 +127,9 @@ func (v *Vector) Projection(other Vector) (*Vector, error) {
 	if other.Magnitude() == 0 {
 		return &Vector{}, &customerrors.ErrZeroVector{}
 	}
-	tmpOther := other.Clone()
-	tmpOther.Multiply(v.Dot(other) / math.Pow(other.Magnitude(), 2))
-	return tmpOther, nil
+	tmp := v.Clone()
+	tmp.Multiply(v.Dot(other) / v.Dot(*v))
+	return tmp, nil
 }
 
 func (v Vector) Cross(other Vector) (float64, error) {

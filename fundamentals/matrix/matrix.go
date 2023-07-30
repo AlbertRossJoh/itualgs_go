@@ -364,47 +364,44 @@ func vecArrGS(m *[]Vector) []*Vector {
 			}
 			row.Sub(*proj)
 		}
-		if row.Magnitude() != 0 {
-			ret = append(ret, row)
-		}
+		ret = append(ret, row)
 	}
 	return ret
 }
 
 // Something is wrong with this function do not use
 func (m *Matrix) LLL() Matrix {
-	base := make([]Vector, 0, m.Rows)
+	b := make([]Vector, 0, m.Rows)
 	for _, row := range *m.Data {
 		clone := make([]float64, len(row))
 		copy(clone, row)
-		base = append(base, CreateVectorFromArray(clone))
+		b = append(b, CreateVectorFromArray(clone))
 	}
-	res := vecArrGS(&base)
-	k := 1
+	bStar := vecArrGS(&b)
 
 	var mu = func(i int, j int) float64 {
-		valI := base[i]
-		valJ := base[j]
-		return (valI.Dot(valJ)) / (valI.Dot(valI))
+		valI := bStar[j]
+		valJ := b[i]
+		return (valI.Dot(valJ)) / (valI.Dot(*valI))
 	}
 
-	for k < len(res) {
+	k := 1
+	for k < m.Rows {
 		for j := k - 1; j > -1; j-- {
 			currMU := mu(k, j)
 			if math.Abs(currMU) > 0.5 {
-				base[j].Multiply(currMU)
-				base[k].Sub(base[j])
-				res = vecArrGS(&base)
+				b[k].Sub(Multiply(b[j], math.Round(currMU)))
+				bStar = vecArrGS(&b)
 			}
 		}
-		if base[k].Dot(base[k]) > (0.75-math.Pow(mu(k, k-1), 2))*base[k-1].Dot(base[k-1]) {
+		if bStar[k].Dot(b[k]) > (0.75-math.Pow(mu(k, k-1), 2))*bStar[k-1].Dot(*bStar[k-1]) {
 			k++
 		} else {
-			base[k], base[k-1] = base[k-1], base[k]
-			res = vecArrGS(&base)
-			k = int(math.Max(float64(k-1), 2))
+			b[k], b[k-1] = b[k-1], b[k]
+			bStar = vecArrGS(&b)
+			k = int(math.Max(float64(k-1), 1))
 		}
 	}
 
-	return *CreateMatrixFromArrayOfVectors(base)
+	return *CreateMatrixFromArrayOfVectors(b)
 }
