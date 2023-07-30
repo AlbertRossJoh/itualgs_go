@@ -1,7 +1,7 @@
 // This is a channel based queue implementation.
 // This queue is strictly to be use when needing a thread safe queue.
 // As the queue is not resizing the initial memory allocation will be persistant until the queue is closed.
-package fundementals
+package queue
 
 import (
 	"github.com/AlbertRossJoh/itualgs_go/customerrors"

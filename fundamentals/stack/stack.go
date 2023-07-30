@@ -1,4 +1,4 @@
-package fundementals
+package stack
 
 import "github.com/AlbertRossJoh/itualgs_go/customerrors"
 

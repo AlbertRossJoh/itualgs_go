@@ -1,4 +1,4 @@
-package fundementals
+package vector
 
 import (
 	"math"

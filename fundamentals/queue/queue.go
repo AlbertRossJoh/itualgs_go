@@ -1,4 +1,4 @@
-package fundementals
+package queue
 
 import "github.com/AlbertRossJoh/itualgs_go/customerrors"
 

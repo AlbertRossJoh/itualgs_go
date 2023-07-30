@@ -6,6 +6,7 @@ type ErrEmptyStack struct{}
 type ErrZeroVector struct{}
 type ErrVectorCross struct{}
 type ErrMatrixNotSquare struct{}
+type ErrEmptyIterator struct{}
 
 func (e *ErrQueueFull) Error() string {
 	return "Queue is full"
@@ -29,4 +30,8 @@ func (e *ErrVectorCross) Error() string {
 
 func (e *ErrMatrixNotSquare) Error() string {
 	return "Invalid operation"
+}
+
+func (e *ErrEmptyIterator) Error() string {
+	return "Iterator is empty"
 }

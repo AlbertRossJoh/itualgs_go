@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"time"
 
+	. "github.com/AlbertRossJoh/itualgs_go/customerrors"
 	"golang.org/x/exp/constraints"
 )
 
@@ -76,4 +77,33 @@ func GetReversed[T any](arr *[]T) []T {
 		acc = append(acc, (*arr)[i])
 	}
 	return acc
+}
+
+type Iterator[T any] struct {
+	index int
+	arr   *[]T
+}
+
+func NewIterator[T any](arr *[]T) *Iterator[T] {
+	clone := make([]T, len(*arr))
+	copy(clone, *arr)
+	return &Iterator[T]{
+		index: 0,
+		arr:   &clone,
+	}
+}
+
+func (i *Iterator[T]) Next() (T, error) {
+	var ret T
+	if i.index >= len(*i.arr) {
+		return ret, &ErrEmptyIterator{}
+	}
+
+	ret = (*i.arr)[i.index]
+	i.index++
+	return ret, nil
+}
+
+func (i *Iterator[T]) HasNext() bool {
+	return i.index < len(*i.arr)
 }

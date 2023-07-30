@@ -1,4 +1,4 @@
-package fundementals
+package matrix
 
 import (
 	"math"
@@ -339,18 +339,6 @@ func (m *Matrix) GramSchmidt() (Matrix, Matrix) {
 		Q.RowScaling(i, 1/math.Sqrt(acc))
 	}
 	return Q.Transpose(), *Q.Product(m)
-}
-
-func (m *Matrix) NonNormalGS() Matrix {
-	tmp := *m
-	for i := 0; i < tmp.Rows; i++ {
-		var acc float64
-		for j := 0; j < tmp.Cols; j++ {
-			acc += math.Pow((*tmp.Data)[i][j], 2)
-		}
-		tmp.RowScaling(i, 1/math.Sqrt(acc))
-	}
-	return tmp
 }
 
 func vecArrGS(m *[]Vector) []*Vector {
