@@ -357,7 +357,6 @@ func vecArrGS(m *[]Vector) []*Vector {
 	return ret
 }
 
-// Something is wrong with this function do not use
 func (m *Matrix) LLL() Matrix {
 	b := make([]Vector, 0, m.Rows)
 	for _, row := range *m.Data {
