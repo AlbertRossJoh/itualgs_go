@@ -127,8 +127,8 @@ func (v *Vector) Projection(other Vector) (*Vector, error) {
 	if other.Magnitude() == 0 {
 		return &Vector{}, &customerrors.ErrZeroVector{}
 	}
-	tmp := v.Clone()
-	tmp.Multiply(v.Dot(other) / v.Dot(*v))
+	tmp := other.Clone()
+	tmp.Multiply(other.Dot(*v) / other.Dot(other))
 	return tmp, nil
 }
 

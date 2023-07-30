@@ -346,7 +346,7 @@ func vecArrGS(m *[]Vector) []*Vector {
 	for _, valI := range *m {
 		row := valI.Clone()
 		for _, vec := range ret {
-			proj, err := vec.Projection(valI)
+			proj, err := valI.Projection(*vec)
 			if err != nil {
 				panic(err)
 			}
