@@ -36,7 +36,9 @@ func (v *Vector) Dimension() int {
 
 // Returns a cloned slice of the Elements in a vector
 func (v *Vector) GetElements() []float64 {
-	return *v.Elements
+	clone := make([]float64, v.dimension)
+	copy(clone, *v.Elements)
+	return clone
 }
 
 func (v *Vector) Dot(other Vector) float64 {
@@ -80,21 +82,20 @@ func (v *Vector) Cartesian(i int) float64 {
 	return (*v.Elements)[i]
 }
 
-func (v *Vector) Multiply(scalar float64) Vector {
-	tmp := NewVector(v.dimension)
+func (v *Vector) Multiply(scalar float64) {
 	for i := 0; i < v.dimension; i++ {
-		(*tmp.Elements)[i] = (*v.Elements)[i] * scalar
+		(*v.Elements)[i] = (*v.Elements)[i] * scalar
 	}
-	return tmp
 }
 
-func (v Vector) Direction() (*Vector, error) {
+// Returns a vector with the same direction as the vector but with a magnitude of 1
+func (v *Vector) Direction() (*Vector, error) {
 	if v.Magnitude() == 0 {
 		return &Vector{}, &customerrors.ErrZeroVector{}
 	}
-	tmp := v
+	tmp := v.Clone()
 	tmp.Multiply(1 / v.Magnitude())
-	return &tmp, nil
+	return tmp, nil
 }
 
 func (v Vector) Equals(other Vector) bool {
@@ -116,13 +117,13 @@ func (v Vector) AngleTo(other Vector) (float64, error) {
 	return math.Acos(v.Dot(other) / (v.Magnitude() * other.Magnitude())), nil
 }
 
-func (v Vector) Projection(other Vector) (*Vector, error) {
+func (v *Vector) Projection(other Vector) (*Vector, error) {
 	if other.Magnitude() == 0 {
 		return &Vector{}, &customerrors.ErrZeroVector{}
 	}
-	tmpOther := other
+	tmpOther := other.Clone()
 	tmpOther.Multiply(v.Dot(other) / math.Pow(other.Magnitude(), 2))
-	return &tmpOther, nil
+	return tmpOther, nil
 }
 
 func (v Vector) Cross(other Vector) (float64, error) {
@@ -130,4 +131,13 @@ func (v Vector) Cross(other Vector) (float64, error) {
 		return 0, &customerrors.ErrVectorCross{}
 	}
 	return (*v.Elements)[0]*(*other.Elements)[1] - (*v.Elements)[1]*(*other.Elements)[0], nil
+}
+
+func (v *Vector) Clone() *Vector {
+	clone := make([]float64, v.dimension)
+	copy(clone, *v.Elements)
+	return &Vector{
+		dimension: v.dimension,
+		Elements:  &clone,
+	}
 }

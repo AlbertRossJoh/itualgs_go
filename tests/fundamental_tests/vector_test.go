@@ -24,3 +24,17 @@ func TestDotProduct(t *testing.T) {
 		t.Error("Expected 30, got ", dp)
 	}
 }
+
+func TestProjection(t *testing.T) {
+	a := CreateVectorFromArray(proj_test_vec1)
+	b := CreateVectorFromArray(proj_test_vec2)
+
+	res, _ := (&a).Projection(b)
+
+	expected := CreateVectorFromArray(proj_test_res)
+
+	if !res.Equals(expected) {
+		t.Error("Expected ", expected.Elements, " got ", res.Elements)
+		t.Fail()
+	}
+}

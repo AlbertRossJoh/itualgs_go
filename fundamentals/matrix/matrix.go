@@ -315,8 +315,8 @@ func (m *Matrix) OrthogonalBasis() Matrix {
 		subVector := NewVector(m.Rows)
 		for _, val := range acc {
 			if !util.IsClose((&current).Dot(val), 0) {
-				quotient := val.Multiply(-(val.Dot(current)) / val.Dot(val))
-				subVector.Add(quotient)
+				val.Multiply(-(val.Dot(current)) / val.Dot(val))
+				subVector.Add(val)
 			}
 		}
 		current.Add(subVector)
@@ -356,7 +356,10 @@ func (m *Matrix) NonNormalGS() Matrix {
 func vecArrGS(m *[]Vector) []Vector {
 	var ret []Vector
 	for _, valI := range *m {
-		row := valI
+		elms := valI.GetElements()
+		clone := make([]float64, len(elms))
+		copy(clone, elms)
+		row := CreateVectorFromArray(clone)
 		for _, col := range ret {
 			proj, err := col.Projection(valI)
 			if err != nil {
@@ -374,7 +377,9 @@ func vecArrGS(m *[]Vector) []Vector {
 func (m *Matrix) LLL() Matrix {
 	base := make([]Vector, 0, m.Rows)
 	for _, row := range *m.Data {
-		base = append(base, CreateVectorFromArray(row))
+		clone := make([]float64, len(row))
+		copy(clone, row)
+		base = append(base, CreateVectorFromArray(clone))
 	}
 	res := vecArrGS(&base)
 	k := 1
@@ -389,7 +394,8 @@ func (m *Matrix) LLL() Matrix {
 		for j := k - 1; j > -1; j-- {
 			currMU := mu(k, j)
 			if math.Abs(currMU) > 0.5 {
-				base[k].Sub(base[j].Multiply(currMU))
+				base[j].Multiply(currMU)
+				base[k].Sub(base[j])
 				res = vecArrGS(&base)
 			}
 		}

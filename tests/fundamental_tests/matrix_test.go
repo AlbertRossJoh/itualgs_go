@@ -230,18 +230,27 @@ func TestLLL(t *testing.T) {
 
 	b := CreateMatrixFromArray(&lll_test2_mat)
 
+	c := CreateMatrixFromArray(&lll_test3_mat)
+
 	expected := CreateMatrixFromArray(&lll_test_res)
 
 	expected2 := CreateMatrixFromArray(&lll_test2_res)
+
+	expected3 := CreateMatrixFromArray(&lll_test3_res)
 
 	res := a.LLL()
 
 	res2 := b.LLL()
 
-	if !a.IsEqual(res) {
-		t.Error("LLL did not work, expected ", expected, " got ", res)
+	res3 := c.LLL()
+
+	if !expected.IsEqual(res) {
+		t.Error("LLL did not work, expected ", expected.Data, " got ", res.Data)
 	}
-	if !b.IsEqual(res2) {
-		t.Error("LLL did not work, expected ", expected2, " got ", res2)
+	if !expected2.IsEqual(res2) {
+		t.Error("LLL did not work, expected ", expected2.Data, " got ", res2.Data)
+	}
+	if !expected3.IsEqual(res3) {
+		t.Error("LLL did not work, expected ", expected3.Data, " got ", res3.Data)
 	}
 }
