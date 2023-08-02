@@ -3,25 +3,25 @@ package graph
 import (
 	"strconv"
 
-	. "github.com/AlbertRossJoh/itualgs_go/fundamentals/bag"
-	. "github.com/AlbertRossJoh/itualgs_go/utilities"
+	"github.com/AlbertRossJoh/itualgs_go/fundamentals/bag"
+	util "github.com/AlbertRossJoh/itualgs_go/utilities"
 )
 
 type Graph struct {
 	v   int
 	e   int
-	adj []Bag[int]
+	adj []bag.Bag[int]
 }
 
 func NewGraph(v int) Graph {
 	if v < 0 {
 		panic("Number of vertices must be nonnegative")
 	}
-	return Graph{v, 0, make([]Bag[int], v)}
+	return Graph{v, 0, make([]bag.Bag[int], v)}
 }
 
 func (g *Graph) Clone() Graph {
-	tmpAdj := make([]Bag[int], len(g.adj))
+	tmpAdj := make([]bag.Bag[int], len(g.adj))
 	for i := 0; i < len(g.adj); i++ {
 		tmpAdj[i] = g.adj[i].Clone()
 	}
@@ -50,7 +50,7 @@ func (g *Graph) AddEdge(v, w int) {
 	g.adj[w].Add(v)
 }
 
-func (g *Graph) Adjecent(v int) Iterator[int] {
+func (g *Graph) Adjecent(v int) util.Iterator[int] {
 	validateVertex(g, v)
 	return *g.adj[v].GetIterator()
 }

@@ -3,10 +3,10 @@ package depthfirst
 import (
 	"strconv"
 
-	. "github.com/AlbertRossJoh/itualgs_go/customerrors"
-	. "github.com/AlbertRossJoh/itualgs_go/fundamentals/stack"
-	. "github.com/AlbertRossJoh/itualgs_go/graphs/graph"
-	. "github.com/AlbertRossJoh/itualgs_go/utilities"
+	"github.com/AlbertRossJoh/itualgs_go/customerrors"
+	"github.com/AlbertRossJoh/itualgs_go/fundamentals/stack"
+	"github.com/AlbertRossJoh/itualgs_go/graphs/graph"
+	util "github.com/AlbertRossJoh/itualgs_go/utilities"
 )
 
 type DFP struct {
@@ -15,7 +15,7 @@ type DFP struct {
 	s       int
 }
 
-func NewDFP(g Graph, s int) *DFP {
+func NewDFP(g graph.Graph, s int) *DFP {
 	dfp := &DFP{
 		visited: make([]bool, g.Vertices()),
 		edgeTo:  make([]int, g.Vertices()),
@@ -25,7 +25,7 @@ func NewDFP(g Graph, s int) *DFP {
 	return dfp
 }
 
-func (dfp *DFP) dfs(g Graph, v int) {
+func (dfp *DFP) dfs(g graph.Graph, v int) {
 	dfp.visited[v] = true
 	iter := g.Adjecent(v)
 	for iter.HasNext() {
@@ -41,11 +41,11 @@ func (dfp *DFP) HasPathTo(v int) bool {
 	return dfp.visited[v]
 }
 
-func (dfp *DFP) PathTo(v int) (*Iterator[int], error) {
+func (dfp *DFP) PathTo(v int) (*util.Iterator[int], error) {
 	dfp.validateVertex(v)
-	stack := NewEmptyStack[int]()
+	stack := stack.NewEmptyStack[int]()
 	if !dfp.HasPathTo(v) {
-		return stack.GetIterator(), &ErrNonExistantPath{}
+		return stack.GetIterator(), &customerrors.ErrNonExistantPath{}
 	}
 	for v != dfp.s {
 		stack.Push(v)

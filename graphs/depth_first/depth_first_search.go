@@ -3,7 +3,7 @@ package depthfirst
 import (
 	"strconv"
 
-	. "github.com/AlbertRossJoh/itualgs_go/graphs/graph"
+	"github.com/AlbertRossJoh/itualgs_go/graphs/graph"
 )
 
 type DFS struct {
@@ -11,7 +11,7 @@ type DFS struct {
 	count   int
 }
 
-func NewDFS(g Graph, n int) DFS {
+func NewDFS(g graph.Graph, n int) DFS {
 	dfs := DFS{
 		visited: make([]bool, n),
 		count:   0,
@@ -20,7 +20,7 @@ func NewDFS(g Graph, n int) DFS {
 	return dfs
 }
 
-func (dfs *DFS) DFS(g Graph, v int) {
+func (dfs *DFS) DFS(g graph.Graph, v int) {
 	dfs.count++
 	dfs.visited[v] = true
 	iter := g.Adjecent(v)

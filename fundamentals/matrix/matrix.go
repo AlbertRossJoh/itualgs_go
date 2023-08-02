@@ -3,7 +3,7 @@ package matrix
 import (
 	"math"
 
-	. "github.com/AlbertRossJoh/itualgs_go/fundamentals/vector"
+	"github.com/AlbertRossJoh/itualgs_go/fundamentals/vector"
 	util "github.com/AlbertRossJoh/itualgs_go/utilities"
 )
 
@@ -24,7 +24,7 @@ func CreateMatrixFromArray(arr *[][]float64) *Matrix {
 	}
 }
 
-func CreateMatrixFromArrayOfVectors(arr []Vector) *Matrix {
+func CreateMatrixFromArrayOfVectors(arr []vector.Vector) *Matrix {
 	if arr == nil {
 		panic("Array is nil")
 	}
@@ -59,7 +59,7 @@ func NewIdentityMatrix(n int) Matrix {
 	return m
 }
 
-func (m *Matrix) AugmentRight(v Vector) {
+func (m *Matrix) AugmentRight(v vector.Vector) {
 	if v.Dimension() != m.Rows {
 		panic("Dimension mismatch")
 	}
@@ -73,8 +73,8 @@ func (m *Matrix) AugmentRight(v Vector) {
 	m.Rows, m.Cols, m.Data = tmp.Rows, tmp.Cols, tmp.Data
 }
 
-func (m *Matrix) MatrixVectorProduct(v Vector) Vector {
-	tmp := NewVector(m.Rows)
+func (m *Matrix) MatrixVectorProduct(v vector.Vector) vector.Vector {
+	tmp := vector.NewVector(m.Rows)
 	for i := 0; i < m.Rows; i++ {
 		for j := 0; j < m.Cols; j++ {
 			(*tmp.Elements)[i] += (*m.Data)[i][j] * (*v.Elements)[j]
@@ -179,7 +179,7 @@ func (m Matrix) isZeroColumn(col int) bool {
 	return false
 }
 
-func (m *Matrix) GaussElimination(v Vector) Vector {
+func (m *Matrix) GaussElimination(v vector.Vector) vector.Vector {
 	tmp := m
 	tmp.AugmentRight(v)
 	tmp.ForwardReduction()
@@ -187,11 +187,11 @@ func (m *Matrix) GaussElimination(v Vector) Vector {
 	return tmp.ExtractColumn(m.Cols - 1)
 }
 
-func (m Matrix) ExtractColumn(col int) Vector {
+func (m Matrix) ExtractColumn(col int) vector.Vector {
 	if col >= m.Cols {
 		panic("Column out of bounds")
 	}
-	acc := NewVector(m.Rows)
+	acc := vector.NewVector(m.Rows)
 	for i := 0; i < m.Rows; i++ {
 		(*acc.Elements)[i] = (*m.Data)[i][col]
 	}
@@ -300,19 +300,19 @@ func clone(m *Matrix) *Matrix {
 
 func (m *Matrix) OrthogonalBasis() Matrix {
 	B := NewMatrix(m.Rows, m.Cols)
-	acc := make([]Vector, 0, m.Cols)
-	first := NewVector(m.Rows)
+	acc := make([]vector.Vector, 0, m.Cols)
+	first := vector.NewVector(m.Rows)
 	for i := 0; i < m.Rows; i++ {
 		(*first.Elements)[i] = (*m.Data)[i][0]
 		(*B.Data)[i][0] = (*m.Data)[i][0]
 	}
 	acc = append(acc, first)
 	for i := 1; i < m.Cols; i++ {
-		current := NewVector(m.Rows)
+		current := vector.NewVector(m.Rows)
 		for j := 0; j < m.Rows; j++ {
 			(*current.Elements)[j] = (*m.Data)[j][i]
 		}
-		subVector := NewVector(m.Rows)
+		subVector := vector.NewVector(m.Rows)
 		for _, val := range acc {
 			if !util.IsClose((&current).Dot(val), 0) {
 				val.Multiply(-(val.Dot(current)) / val.Dot(val))
@@ -341,8 +341,8 @@ func (m *Matrix) GramSchmidt() (Matrix, Matrix) {
 	return Q.Transpose(), *Q.Product(m)
 }
 
-func vecArrGS(m *[]Vector) []*Vector {
-	var ret []*Vector
+func vecArrGS(m *[]vector.Vector) []*vector.Vector {
+	var ret []*vector.Vector
 	for _, valI := range *m {
 		row := valI.Clone()
 		for _, vec := range ret {
@@ -358,11 +358,11 @@ func vecArrGS(m *[]Vector) []*Vector {
 }
 
 func (m *Matrix) LLL() Matrix {
-	b := make([]Vector, 0, m.Rows)
+	b := make([]vector.Vector, 0, m.Rows)
 	for _, row := range *m.Data {
 		clone := make([]float64, len(row))
 		copy(clone, row)
-		b = append(b, CreateVectorFromArray(clone))
+		b = append(b, vector.CreateVectorFromArray(clone))
 	}
 	bStar := vecArrGS(&b)
 
@@ -377,7 +377,7 @@ func (m *Matrix) LLL() Matrix {
 		for j := k - 1; j > -1; j-- {
 			currMU := mu(k, j)
 			if math.Abs(currMU) > 0.5 {
-				b[k].Sub(Multiply(b[j], math.Round(currMU)))
+				b[k].Sub(vector.Multiply(b[j], math.Round(currMU)))
 				bStar = vecArrGS(&b)
 			}
 		}

@@ -2,7 +2,7 @@ package stack
 
 import (
 	"github.com/AlbertRossJoh/itualgs_go/customerrors"
-	. "github.com/AlbertRossJoh/itualgs_go/utilities"
+	util "github.com/AlbertRossJoh/itualgs_go/utilities"
 )
 
 type Stack[T any] struct {
@@ -57,8 +57,8 @@ func (s *Stack[T]) Items() []T {
 	return s.items
 }
 
-func (s *Stack[T]) GetIterator() *Iterator[T] {
+func (s *Stack[T]) GetIterator() *util.Iterator[T] {
 	tmp := make([]T, s.Size())
 	copy(tmp, s.items)
-	return NewIterator[T](&tmp)
+	return util.NewIterator[T](&tmp)
 }

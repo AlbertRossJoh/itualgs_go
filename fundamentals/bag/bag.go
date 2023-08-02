@@ -1,7 +1,7 @@
 package bag
 
 import (
-	. "github.com/AlbertRossJoh/itualgs_go/utilities"
+	util "github.com/AlbertRossJoh/itualgs_go/utilities"
 )
 
 type Bag[T any] struct {
@@ -25,8 +25,8 @@ func (b *Bag[T]) IsEmpty() bool {
 	return b.Size == 0
 }
 
-func (b *Bag[T]) GetIterator() *Iterator[T] {
-	return NewIterator(&b.Items)
+func (b *Bag[T]) GetIterator() *util.Iterator[T] {
+	return util.NewIterator(&b.Items)
 }
 
 func (b *Bag[T]) Clone() Bag[T] {
