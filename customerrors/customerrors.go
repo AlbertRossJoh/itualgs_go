@@ -7,6 +7,7 @@ type ErrZeroVector struct{}
 type ErrVectorCross struct{}
 type ErrMatrixNotSquare struct{}
 type ErrEmptyIterator struct{}
+type ErrNonExistantPath struct{}
 
 func (e *ErrQueueFull) Error() string {
 	return "Queue is full"
@@ -34,4 +35,8 @@ func (e *ErrMatrixNotSquare) Error() string {
 
 func (e *ErrEmptyIterator) Error() string {
 	return "Iterator is empty"
+}
+
+func (e *ErrNonExistantPath) Error() string {
+	return "Path does not exist"
 }

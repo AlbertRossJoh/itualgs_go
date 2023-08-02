@@ -28,3 +28,12 @@ func (b *Bag[T]) IsEmpty() bool {
 func (b *Bag[T]) GetIterator() *Iterator[T] {
 	return NewIterator(&b.Items)
 }
+
+func (b *Bag[T]) Clone() Bag[T] {
+	tmp := make([]T, b.Size)
+	copy(tmp, b.Items)
+	return Bag[T]{
+		Items: tmp,
+		Size:  b.Size,
+	}
+}
