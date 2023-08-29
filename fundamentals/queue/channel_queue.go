@@ -1,6 +1,7 @@
+// Package queue
 // This is a channel based queue implementation.
 // This queue is strictly to be use when needing a thread safe queue.
-// As the queue is not resizing the initial memory allocation will be persistant until the queue is closed.
+// As the queue is not resizing the initial memory allocation will be persistent until the queue is closed.
 package queue
 
 import (

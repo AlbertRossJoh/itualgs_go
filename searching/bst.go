@@ -30,7 +30,7 @@ func NewEmptyBST[K constraints.Ordered, T any]() BST[K, T] {
 	return BST[K, T]{nil}
 }
 
-func (self *BST[K, T]) Put(key K, val T) {
+func (bst *BST[K, T]) Put(key K, val T) {
 	node := &node[K, T]{
 		value: val,
 		key:   key,
@@ -38,12 +38,12 @@ func (self *BST[K, T]) Put(key K, val T) {
 		right: nil,
 	}
 
-	if self.root == nil {
-		*self.root = *node
+	if bst.root == nil {
+		*bst.root = *node
 		return
 	}
 
-	put[K, T](self.root, node)
+	put[K, T](bst.root, node)
 }
 
 func put[K constraints.Ordered, T any](parent *node[K, T], node *node[K, T]) {
@@ -71,13 +71,13 @@ func put[K constraints.Ordered, T any](parent *node[K, T], node *node[K, T]) {
 	}
 }
 
-func (self *BST[K, T]) Get(key K) (T, error) {
-	if self.root == nil {
+func (bst *BST[K, T]) Get(key K) (T, error) {
+	if bst.root == nil {
 		var res T
 		return res, errors.New("the tree is empty")
 	}
 
-	isCorrect, node := walk[K, T](key, self.root)
+	isCorrect, node := walk[K, T](key, bst.root)
 
 	if isCorrect {
 		return node.value, nil
@@ -104,33 +104,33 @@ func walk[K constraints.Ordered, T any](key K, node *node[K, T]) (bool, *node[K,
 	}
 }
 
-func (self *BST[K, T]) Delete(key K) (T, error) {
-	if self.root == nil {
+func (bst *BST[K, T]) Delete(key K) (T, error) {
+	if bst.root == nil {
 		var res T
 		return res, errors.New("the tree is empty")
 	}
 
-	isCorrect, node := walk[K, T](key, self.root)
+	isCorrect, node := walk[K, T](key, bst.root)
 
 	if !isCorrect {
 		var res T
 		return res, errors.New("the key could not be found")
 	}
 	ret := node.value
-	self.root = self._delete(key, self.root)
+	bst.root = bst._delete(key, bst.root)
 	return ret, nil
 }
 
-func (self *BST[K, T]) _delete(key K, node *node[K, T]) *node[K, T] {
+func (bst *BST[K, T]) _delete(key K, node *node[K, T]) *node[K, T] {
 	if node == nil {
 		return nil
 	}
 
-	var cmp = node.cmpkey(key)
+	var cmp = node.compare(key)
 	if cmp < 0 {
-		node.left = self._delete(key, node.left)
+		node.left = bst._delete(key, node.left)
 	} else if cmp > 0 {
-		node.right = self._delete(key, node.right)
+		node.right = bst._delete(key, node.right)
 	} else {
 		if node.right == nil {
 			return node.left
@@ -147,26 +147,26 @@ func (self *BST[K, T]) _delete(key K, node *node[K, T]) *node[K, T] {
 	return node
 }
 
-func (self *node[K, T]) cmpkey(key K) int8 {
-	if self.key < key {
+func (node *node[K, T]) compare(key K) int8 {
+	if node.key < key {
 		return 1
-	} else if self.key > key {
+	} else if node.key > key {
 		return -1
 	}
 	return 0
 }
 
-func (self *BST[K, T]) Min() (K, error) {
-	if self.root == nil {
+func (bst *BST[K, T]) Min() (K, error) {
+	if bst.root == nil {
 		var ret K
 		return ret, errors.New("the tree is empty")
 	}
-	ret := self.root.Min()
+	ret := bst.root.Min()
 	return ret.key, nil
 }
 
-func (self node[K, T]) Min() *node[K, T] {
-	curr := &self
+func (node *node[K, T]) Min() *node[K, T] {
+	curr := node
 	next := curr
 
 	for next != nil {
@@ -176,17 +176,17 @@ func (self node[K, T]) Min() *node[K, T] {
 	return curr
 }
 
-func (self *BST[K, T]) Max() (K, error) {
-	if self.root == nil {
+func (bst *BST[K, T]) Max() (K, error) {
+	if bst.root == nil {
 		var ret K
 		return ret, errors.New("the tree is empty")
 	}
-	ret := self.root.Max()
+	ret := bst.root.Max()
 	return ret.key, nil
 }
 
-func (self node[K, T]) Max() *node[K, T] {
-	curr := &self
+func (node *node[K, T]) Max() *node[K, T] {
+	curr := node
 	next := curr
 
 	for next != nil {
@@ -196,11 +196,11 @@ func (self node[K, T]) Max() *node[K, T] {
 	return curr
 }
 
-func (self *BST[K, T]) DeleteMax() {
-	if self.root == nil {
+func (bst *BST[K, T]) DeleteMax() {
+	if bst.root == nil {
 		panic("the tree is empty")
 	}
-	self.root = deleteMax(self.root)
+	bst.root = deleteMax(bst.root)
 }
 
 func deleteMax[K constraints.Ordered, T any](node *node[K, T]) *node[K, T] {
@@ -211,11 +211,11 @@ func deleteMax[K constraints.Ordered, T any](node *node[K, T]) *node[K, T] {
 	return node
 }
 
-func (self *BST[K, T]) DeleteMin() {
-	if self.root == nil {
+func (bst *BST[K, T]) DeleteMin() {
+	if bst.root == nil {
 		panic("the tree is empty")
 	}
-	self.root = deleteMin(self.root)
+	bst.root = deleteMin(bst.root)
 }
 
 func deleteMin[K constraints.Ordered, T any](node *node[K, T]) *node[K, T] {
@@ -226,13 +226,13 @@ func deleteMin[K constraints.Ordered, T any](node *node[K, T]) *node[K, T] {
 	return node
 }
 
-func (self *BST[K, T]) Floor(key K) (K, error) {
-	if self.root == nil {
+func (bst *BST[K, T]) Floor(key K) (K, error) {
+	if bst.root == nil {
 		var ret K
 		return ret, errors.New("the tree is empty")
 	}
 
-	ret := floor[K, T](key, self.root)
+	ret := floor[K, T](key, bst.root)
 	if ret == nil {
 		var ret K
 		return ret, errors.New("the key could not be found")
@@ -244,7 +244,7 @@ func floor[K constraints.Ordered, T any](key K, node *node[K, T]) *node[K, T] {
 	if node == nil {
 		return nil
 	}
-	cmp := node.cmpkey(key) * -1
+	cmp := node.compare(key) * -1
 
 	if cmp == 0 {
 		return node
@@ -263,12 +263,12 @@ func floor[K constraints.Ordered, T any](key K, node *node[K, T]) *node[K, T] {
 	}
 }
 
-func (self *BST[K, T]) Ceiling(key K) (K, error) {
-	if self.root == nil {
+func (bst *BST[K, T]) Ceiling(key K) (K, error) {
+	if bst.root == nil {
 		var ret K
 		return ret, errors.New("the tree is empty")
 	}
-	ret := ceiling[K, T](key, self.root)
+	ret := ceiling[K, T](key, bst.root)
 	if ret == nil {
 		var ret K
 		return ret, errors.New("the key could not be found")
@@ -280,7 +280,7 @@ func ceiling[K constraints.Ordered, T any](key K, node *node[K, T]) *node[K, T] 
 	if node == nil {
 		return nil
 	}
-	cmp := node.cmpkey(key) * -1
+	cmp := node.compare(key) * -1
 
 	if cmp == 0 {
 		return node
@@ -298,24 +298,24 @@ func ceiling[K constraints.Ordered, T any](key K, node *node[K, T]) *node[K, T] 
 	return ceiling(key, node.right)
 }
 
-func (self *BST[K, T]) GetAllKeys() ([]K, error) {
-	if self.root == nil {
+func (bst *BST[K, T]) GetAllKeys() ([]K, error) {
+	if bst.root == nil {
 		return nil, errors.New("the tree is empty")
 	}
-	min, err := self.Min()
-	max, err2 := self.Max()
+	minVal, err := bst.Min()
+	maxVal, err2 := bst.Max()
 	if err != nil {
 		return nil, err
 	}
 	if err2 != nil {
 		return nil, err2
 	}
-	ret, _ := self.GetkeysInRange(min, max)
+	ret, _ := bst.GetKeysInRange(minVal, maxVal)
 	return ret, nil
 }
 
-func (self *BST[K, T]) GetkeysInRange(lo K, hi K) ([]K, error) {
-	if self.root == nil {
+func (bst *BST[K, T]) GetKeysInRange(lo K, hi K) ([]K, error) {
+	if bst.root == nil {
 		return nil, errors.New("the tree is empty")
 	}
 	if lo > hi {
@@ -323,36 +323,36 @@ func (self *BST[K, T]) GetkeysInRange(lo K, hi K) ([]K, error) {
 	}
 	var arr []K
 	var tmp []T
-	keys(self.root, &arr, &tmp, lo, hi)
+	keys(bst.root, &arr, &tmp, lo, hi)
 	return arr, nil
 }
 
-func keys[K constraints.Ordered, T any](node *node[K, T], listkeys *[]K, listvalues *[]T, lo K, hi K) {
+func keys[K constraints.Ordered, T any](node *node[K, T], listKeys *[]K, listValues *[]T, lo K, hi K) {
 	if node == nil {
 		return
 	}
 	if lo < node.key {
-		keys(node.left, listkeys, listvalues, lo, hi)
+		keys(node.left, listKeys, listValues, lo, hi)
 	}
 	if lo <= node.key && hi >= node.key {
-		*listkeys = append(*listkeys, node.key)
-		*listvalues = append(*listvalues, node.value)
+		*listKeys = append(*listKeys, node.key)
+		*listValues = append(*listValues, node.value)
 	}
 	if hi > node.key {
-		keys(node.right, listkeys, listvalues, lo, hi)
+		keys(node.right, listKeys, listValues, lo, hi)
 	}
 }
 
-func (self *BST[K, T]) IsEmpty() bool {
-	return self.root == nil
+func (bst *BST[K, T]) IsEmpty() bool {
+	return bst.root == nil
 }
 
-func (self *BST[K, T]) GetAllValues() ([]T, error) {
-	if self.root == nil {
+func (bst *BST[K, T]) GetAllValues() ([]T, error) {
+	if bst.root == nil {
 		return nil, errors.New("the tree is empty")
 	}
-	min, err := self.Min()
-	max, err2 := self.Max()
+	minVal, err := bst.Min()
+	maxVal, err2 := bst.Max()
 	if err != nil {
 		return nil, err
 	}
@@ -361,17 +361,17 @@ func (self *BST[K, T]) GetAllValues() ([]T, error) {
 	}
 	var list []T
 	var tmp []K
-	keys(self.root, &tmp, &list, min, max)
+	keys(bst.root, &tmp, &list, minVal, maxVal)
 	return list, nil
 }
 
-func (self *BST[K, T]) Mapify() (map[K]T, error) {
-	if self.root == nil {
+func (bst *BST[K, T]) Mapify() (map[K]T, error) {
+	if bst.root == nil {
 		return nil, errors.New("the tree is empty")
 	}
 
-	min, err := self.Min()
-	max, err2 := self.Max()
+	minVal, err := bst.Min()
+	maxVal, err2 := bst.Max()
 	if err != nil {
 		return nil, err
 	}
@@ -379,13 +379,13 @@ func (self *BST[K, T]) Mapify() (map[K]T, error) {
 		return nil, err2
 	}
 
-	var allkeys []K
-	var allvalues []T
-	keys(self.root, &allkeys, &allvalues, min, max)
+	var allKeys []K
+	var allValues []T
+	keys(bst.root, &allKeys, &allValues, minVal, maxVal)
 	ret := make(map[K]T)
 
-	for i := 0; i < len(allkeys); i++ {
-		ret[allkeys[i]] = allvalues[i]
+	for i := 0; i < len(allKeys); i++ {
+		ret[allKeys[i]] = allValues[i]
 	}
 
 	return ret, nil

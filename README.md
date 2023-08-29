@@ -1,5 +1,5 @@
 # ITU Algorithms - Go Edition
-`itualgs_go` is mostly a Go port of the Java code in [Algorithms, 4th Edition](https://algs4.cs.princeton.edu/home/). However it strives to be a general purpose library with all the data structures and algorithms needed.
+`itualgs_go` is mostly a Go port of the Java code in [Algorithms, 4th Edition](https://algs4.cs.princeton.edu/home/). However, it strives to be a general purpose library with all the data structures and algorithms needed.
 
 ## Target audience
 `itualgs_go` should be for student currently wanting to learn algorithms specifically in go, but also specific users who might want to use the general purpose nature of this library.

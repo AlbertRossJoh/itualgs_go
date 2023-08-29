@@ -12,13 +12,11 @@ func TestNewMatrix(t *testing.T) {
 	(*m.Data)[0][0] = 1
 	(*m.Data)[0][1] = 1
 	if !m.IsSquare() {
-		t.Fatal()
-		panic("Matrix is not square")
+		t.Fatal("Matrix is not square")
 	}
 
 	if (*m.Data)[0][0] != 1 {
-		t.Fatal()
-		panic("Matrix is not initialized correctly")
+		t.Fatal("Matrix is not initialized correctly")
 	}
 }
 
@@ -35,13 +33,11 @@ func TestNewMatrix2(t *testing.T) {
 	(*m.Data)[0][0] = 1
 	(*m.Data)[0][1] = 5
 	if m.IsSquare() {
-		t.Fatal()
-		panic("Matrix is square")
+		t.Fatal("Matrix is square")
 	}
 
 	if (*m.Data)[0][0] != 1 {
-		t.Fatal()
-		panic("Matrix is not initialized correctly")
+		t.Fatal("Matrix is not initialized correctly")
 	}
 }
 
@@ -62,7 +58,7 @@ func TestTranspose(t *testing.T) {
 	k := CreateMatrixFromArray(&b)
 	res := m.Transpose()
 
-	if !res.IsEqual(*k) {
+	if !res.IsEqual(k) {
 		panic("Transpose does not work")
 	}
 }
@@ -84,7 +80,7 @@ func TestPower(t *testing.T) {
 	k := CreateMatrixFromArray(&b)
 	m.Power(2)
 
-	if !m.IsEqual(*k) {
+	if !m.IsEqual(k) {
 		panic("Transpose does not work")
 	}
 }
@@ -115,9 +111,9 @@ func TestInverse(t *testing.T) {
 	m := CreateMatrixFromArray(&a)
 	dummy := *m
 	k := NewIdentityMatrix(3)
-	res := (m.ComputeInverse())
+	res := m.ComputeInverse()
 	res = res.Product(&dummy)
-	if !res.IsEqual(k) {
+	if !res.IsEqual(&k) {
 		t.Errorf("Inverse does not work, expected %v got %v", k.Data, res.Data)
 	}
 }
@@ -129,7 +125,7 @@ func TestProduct(t *testing.T) {
 
 	res := a.Product(b)
 
-	if !res.IsEqual(*expected) {
+	if !res.IsEqual(expected) {
 		panic("Product does not work")
 	}
 }
@@ -139,7 +135,7 @@ func TestMatrixVectorProduct(t *testing.T) {
 	b := CreateVectorFromArray(mat_vec_prod_test_vec)
 	expected := CreateVectorFromArray(mat_vec_prod_test_res)
 	res := a.MatrixVectorProduct(b)
-	if !res.Equals(expected) {
+	if !res.Equals(&expected) {
 		t.Error("Matrix vector product does not work, expected ", expected.GetElements(), " got ", res.GetElements())
 	}
 }
@@ -152,7 +148,7 @@ func TestMatrixRowReplacement(t *testing.T) {
 		int(mat_row_replace_test_rows[1]),
 		mat_row_replace_test_val)
 
-	if !a.IsEqual(*res) {
+	if !a.IsEqual(res) {
 		t.Error("Matrix row replacement does not work, expected ", res.Data, " got ", a.Data)
 	}
 }
@@ -162,7 +158,7 @@ func TestMatrixRowInterchange(t *testing.T) {
 	res := CreateMatrixFromArray(&mat_row_interchange_test_res)
 	a.RowInterchange(int(mat_row_interchange_test_rows[0]), int(mat_row_interchange_test_rows[1]))
 
-	if !a.IsEqual(*res) {
+	if !a.IsEqual(res) {
 		t.Error("Matrix row interchange does not work, expected ", res.Data, " got ", a.Data)
 	}
 }
@@ -181,7 +177,7 @@ func TestMatrixAugmentRight(t *testing.T) {
 		collected = append(collected, (*a.Data)[i][a.Cols-1])
 	}
 
-	if !a.IsEqual(*expected) {
+	if !a.IsEqual(expected) {
 		t.Error("Matrix augment right does not work, expected ", b.GetElements(), " got ", collected)
 	}
 }
@@ -193,7 +189,7 @@ func TestMatrixForwardReduction(t *testing.T) {
 
 	a.ForwardReduction()
 
-	if !a.IsEqual(*expected) {
+	if !a.IsEqual(expected) {
 		t.Error("Matrix forward reduction does not work, expected ", expected.Data, " got ", a.Data)
 	}
 }
@@ -205,7 +201,7 @@ func TestMatrixGaussianElimination(t *testing.T) {
 
 	res := a.GaussElimination(b)
 
-	if !res.Equals(expected) {
+	if !res.Equals(&expected) {
 		t.Error("Gaussian elimination does not work, expected ", expected.GetElements(), " got ", res.GetElements())
 	}
 }
@@ -216,11 +212,11 @@ func TestGramSchmidt(t *testing.T) {
 	expected2 := CreateMatrixFromArray(&gram_schmidt_test_res_2)
 	res1, res2 := a.GramSchmidt()
 
-	if !res1.IsEqual(*expected1) {
-		t.Error("Gram schmidt did not work, expected this ortonormal matrix ", expected1.Data, " got ", res1.Data)
+	if !res1.IsEqual(expected1) {
+		t.Error("Gram schmidt did not work, expected this orthonormal matrix ", expected1.Data, " got ", res1.Data)
 	}
 
-	if !res2.IsEqual(*expected2) {
+	if !res2.IsEqual(expected2) {
 		t.Error("Gram schmidt did not work, expected this upper matrix ", expected2.Data, " got ", res2.Data)
 	}
 }
@@ -238,10 +234,10 @@ func TestLLL(t *testing.T) {
 
 	res2 := b.LLL()
 
-	if !expected.IsEqual(res) {
+	if !expected.IsEqual(&res) {
 		t.Error("LLL did not work, expected ", expected.Data, " got ", res.Data)
 	}
-	if !expected2.IsEqual(res2) {
+	if !expected2.IsEqual(&res2) {
 		t.Error("LLL did not work, expected ", expected2.Data, " got ", res2.Data)
 	}
 }

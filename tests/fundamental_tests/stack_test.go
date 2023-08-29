@@ -12,7 +12,8 @@ import (
 
 func TestStack(t *testing.T) {
 	s := NewEmptyStack[int]()
-	rand.Seed(time.Now().Unix())
+	rand.New(rand.NewSource(time.Now().Unix()))
+
 	testArr := rand.Perm(100)
 
 	expected := GetReversed(&testArr)

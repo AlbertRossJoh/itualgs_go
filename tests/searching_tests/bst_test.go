@@ -213,7 +213,7 @@ func TestMapify(t *testing.T) {
 	b.Put(20, "Birgit")
 	b.Put(21, "Peter")
 	keys, err1 := b.GetAllKeys()
-	vals, err2 := b.GetAllValues()
+	values, err2 := b.GetAllValues()
 	m, err3 := b.Mapify()
 	if err1 != nil {
 		t.Errorf("Something went wrong")
@@ -227,7 +227,7 @@ func TestMapify(t *testing.T) {
 
 	for i := 0; i < len(keys); i++ {
 		key := keys[i]
-		val := vals[i]
+		val := values[i]
 		if m[key] != val {
 			t.Errorf("Mapify failed, expected: %v, got: %v", val, m[key])
 		}

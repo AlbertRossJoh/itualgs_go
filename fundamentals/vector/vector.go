@@ -34,14 +34,14 @@ func (v *Vector) Dimension() int {
 	return v.dimension
 }
 
-// Returns a cloned slice of the Elements in a vector
+// GetElements Returns a cloned slice of the Elements in a vector
 func (v *Vector) GetElements() []float64 {
 	clone := make([]float64, v.dimension)
 	copy(clone, *v.Elements)
 	return clone
 }
 
-func (v *Vector) Dot(other Vector) float64 {
+func (v *Vector) Dot(other *Vector) float64 {
 	var result float64
 	for i := 0; i < v.dimension; i++ {
 		result += (*v.Elements)[i] * (*other.Elements)[i]
@@ -62,7 +62,7 @@ func (v *Vector) Sub(other Vector) {
 }
 
 func (v *Vector) Magnitude() float64 {
-	return math.Sqrt(v.Dot(*v))
+	return math.Sqrt(v.Dot(v))
 }
 
 func (v *Vector) Normalize() {
@@ -88,13 +88,13 @@ func (v *Vector) Multiply(scalar float64) {
 	}
 }
 
-func Multiply(v Vector, scalar float64) Vector {
+func Multiply(v *Vector, scalar float64) Vector {
 	tmp := v.Clone()
 	tmp.Multiply(scalar)
 	return *tmp
 }
 
-// Returns a vector with the same direction as the vector but with a magnitude of 1
+// Direction Returns a vector with the same direction as the vector but with a magnitude of 1
 func (v *Vector) Direction() (*Vector, error) {
 	if v.Magnitude() == 0 {
 		return &Vector{}, &customerrors.ErrZeroVector{}
@@ -104,7 +104,7 @@ func (v *Vector) Direction() (*Vector, error) {
 	return tmp, nil
 }
 
-func (v Vector) Equals(other Vector) bool {
+func (v *Vector) Equals(other *Vector) bool {
 	if v.dimension != other.dimension {
 		return false
 	}
@@ -116,7 +116,7 @@ func (v Vector) Equals(other Vector) bool {
 	return true
 }
 
-func (v Vector) AngleTo(other Vector) (float64, error) {
+func (v *Vector) AngleTo(other *Vector) (float64, error) {
 	if v.Magnitude() == 0 || other.Magnitude() == 0 {
 		return 0, &customerrors.ErrZeroVector{}
 	}
@@ -128,11 +128,11 @@ func (v *Vector) Projection(other Vector) (*Vector, error) {
 		return &Vector{}, &customerrors.ErrZeroVector{}
 	}
 	tmp := other.Clone()
-	tmp.Multiply(other.Dot(*v) / other.Dot(other))
+	tmp.Multiply(other.Dot(v) / other.Dot(&other))
 	return tmp, nil
 }
 
-func (v Vector) Cross(other Vector) (float64, error) {
+func (v *Vector) Cross(other *Vector) (float64, error) {
 	if v.dimension > 2 || other.dimension > 2 {
 		return 0, &customerrors.ErrVectorCross{}
 	}

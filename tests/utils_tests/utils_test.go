@@ -18,7 +18,8 @@ func TestIsClose(t *testing.T) {
 }
 
 func TestReverse(t *testing.T) {
-	rand.Seed(time.Now().Unix())
+	rand.New(rand.NewSource(time.Now().Unix()))
+
 	testArr := rand.Perm(100)
 
 	clone := make([]int, len(testArr))
@@ -32,7 +33,8 @@ func TestReverse(t *testing.T) {
 }
 
 func TestGetReversed(t *testing.T) {
-	rand.Seed(time.Now().Unix())
+	rand.New(rand.NewSource(time.Now().Unix()))
+
 	testArr := rand.Perm(100)
 
 	clone := GetReversed(&testArr)
@@ -45,7 +47,8 @@ func TestGetReversed(t *testing.T) {
 }
 
 func TestZip(t *testing.T) {
-	rand.Seed(time.Now().Unix())
+	rand.New(rand.NewSource(time.Now().Unix()))
+
 	a := rand.Perm(10)
 	b := rand.Perm(10)
 
@@ -64,7 +67,8 @@ func TestZip(t *testing.T) {
 }
 
 func TestShuffle(t *testing.T) {
-	rand.Seed(time.Now().Unix())
+	rand.New(rand.NewSource(time.Now().Unix()))
+
 	testArr := rand.Perm(100)
 	clone := make([]int, len(testArr))
 	copy(clone, testArr)

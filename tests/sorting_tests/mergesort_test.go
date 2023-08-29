@@ -10,8 +10,7 @@ import (
 )
 
 func TestMergeSort(t *testing.T) {
-
-	rand.Seed(time.Now().Unix())
+	rand.New(rand.NewSource(time.Now().Unix()))
 	a := rand.Perm(1_000_000)
 	sort.MergeSort(&a)
 

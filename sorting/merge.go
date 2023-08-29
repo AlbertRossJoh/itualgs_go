@@ -6,14 +6,14 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-var max = 1 << 11
+var parallelFallOver = 1 << 11
 
 func MergeSort[T constraints.Ordered](arr *[]T) {
 	var aux []T
 	for _, elm := range *arr {
 		aux = append(aux, elm)
 	}
-	sort_parallel(&aux, arr, 0, len(*arr)-1)
+	sortParallel(&aux, arr, 0, len(*arr)-1)
 }
 
 func merge[T constraints.Ordered](src *[]T, dst *[]T, lo int, mid int, hi int) {
@@ -55,8 +55,8 @@ func sort[T constraints.Ordered](src *[]T, dst *[]T, lo int, hi int) {
 	merge(src, dst, lo, mid, hi)
 }
 
-func sort_parallel[T constraints.Ordered](src *[]T, dst *[]T, lo int, hi int) {
-	if len(*src) <= max {
+func sortParallel[T constraints.Ordered](src *[]T, dst *[]T, lo int, hi int) {
+	if len(*src) <= parallelFallOver {
 		sort(src, dst, lo, hi)
 		return
 	}
@@ -72,10 +72,10 @@ func sort_parallel[T constraints.Ordered](src *[]T, dst *[]T, lo int, hi int) {
 
 	go func() {
 		defer wg.Done()
-		sort_parallel(dst, src, lo, mid)
+		sortParallel(dst, src, lo, mid)
 	}()
 
-	sort_parallel(dst, src, mid+1, hi)
+	sortParallel(dst, src, mid+1, hi)
 
 	wg.Wait()
 	if !((*src)[mid+1] < (*src)[mid]) {

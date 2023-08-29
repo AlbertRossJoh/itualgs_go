@@ -10,7 +10,7 @@ import (
 
 func TestQueue(t *testing.T) {
 	s := NewEmptyQueue[int]()
-	rand.Seed(time.Now().Unix())
+	rand.New(rand.NewSource(time.Now().Unix()))
 	testArr := rand.Perm(100)
 
 	for _, val := range testArr {

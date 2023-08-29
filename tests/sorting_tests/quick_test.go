@@ -11,7 +11,7 @@ import (
 
 func TestQuickSort(t *testing.T) {
 
-	rand.Seed(time.Now().Unix())
+	rand.New(rand.NewSource(time.Now().Unix()))
 	a := rand.Perm(1_000)
 	sort.QuickSort(&a)
 
@@ -22,7 +22,7 @@ func TestQuickSort(t *testing.T) {
 
 func TestQuickSelect(t *testing.T) {
 
-	rand.Seed(time.Now().Unix())
+	rand.New(rand.NewSource(time.Now().Unix()))
 	a := rand.Perm(1_000)
 
 	if sort.QuickSelect(&a, 25) != 25 {

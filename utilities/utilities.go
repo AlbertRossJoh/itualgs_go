@@ -41,17 +41,22 @@ func Exchange[T any](arr *[]T, i int, j int) {
 }
 
 func Shuffle[T any](arr *[]T) {
-	rand.Seed(time.Now().Unix())
+	rand.New(rand.NewSource(time.Now().Unix()))
+
 	for i := 0; i < len(*arr); i++ {
 		j := rand.Intn(i + 1)
 		Exchange(arr, i, j)
 	}
 }
 
-// Zips two arrays together
+// Zip Zips two arrays together
+//
 // a := int[]{1, 2, 3}
+//
 // b := int[]{4, 5, 6}
+//
 // c, _ := Zip(&a, &b)
+//
 // c == int[]{1, 4, 2, 5, 3, 6}
 func Zip[T any](arr1 *[]T, arr2 *[]T) ([]T, error) {
 	if len(*arr1) != len(*arr2) {
