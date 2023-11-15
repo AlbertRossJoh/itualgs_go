@@ -42,7 +42,7 @@ func (t *ThreadNumericVariable[T]) Set(val T) {
 	t.mu.Unlock()
 }
 
-func (t *ThreadNumericVariable[T]) Add1(val T) {
+func (t *ThreadNumericVariable[T]) Add1() {
 	t.mu.Lock()
 	t.value++
 	t.mu.Unlock()
