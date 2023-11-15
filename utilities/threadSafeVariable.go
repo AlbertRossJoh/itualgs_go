@@ -24,7 +24,7 @@ func (t *ThreadVariable[T]) Set(val T) {
 	t.mu.Unlock()
 }
 
-type ThreadNumericVariable[T constraints.Complex] struct {
+type ThreadNumericVariable[T constraints.Integer | constraints.Float | constraints.Complex] struct {
 	value T
 	mu    sync.Mutex
 }
