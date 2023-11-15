@@ -4,7 +4,7 @@ import (
 	"strconv"
 
 	"github.com/AlbertRossJoh/itualgs_go/fundamentals/bag"
-	util "github.com/AlbertRossJoh/itualgs_go/utilities"
+	util "github.com/AlbertRossJoh/itualgs_go/utilities/sharedFunctions"
 )
 
 type Graph struct {

@@ -2,7 +2,7 @@ package stack
 
 import (
 	"github.com/AlbertRossJoh/itualgs_go/customerrors"
-	util "github.com/AlbertRossJoh/itualgs_go/utilities"
+	util "github.com/AlbertRossJoh/itualgs_go/utilities/sharedFunctions"
 )
 
 type Stack[T any] struct {

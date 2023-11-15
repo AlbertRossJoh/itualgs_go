@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	bst "github.com/AlbertRossJoh/itualgs_go/searching"
-	utils "github.com/AlbertRossJoh/itualgs_go/utilities"
+	utils "github.com/AlbertRossJoh/itualgs_go/utilities/sharedFunctions"
 )
 
 func TestNewBST(t *testing.T) {

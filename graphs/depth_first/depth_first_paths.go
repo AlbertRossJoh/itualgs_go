@@ -6,7 +6,7 @@ import (
 	"github.com/AlbertRossJoh/itualgs_go/customerrors"
 	"github.com/AlbertRossJoh/itualgs_go/fundamentals/stack"
 	"github.com/AlbertRossJoh/itualgs_go/graphs/graph"
-	util "github.com/AlbertRossJoh/itualgs_go/utilities"
+	util "github.com/AlbertRossJoh/itualgs_go/utilities/sharedFunctions"
 )
 
 type DFP struct {

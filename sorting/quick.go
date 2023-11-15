@@ -1,7 +1,7 @@
 package sorting
 
 import (
-	. "github.com/AlbertRossJoh/itualgs_go/utilities"
+	. "github.com/AlbertRossJoh/itualgs_go/utilities/sharedFunctions"
 	"golang.org/x/exp/constraints"
 )
 

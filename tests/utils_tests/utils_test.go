@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/AlbertRossJoh/itualgs_go/utilities"
+	. "github.com/AlbertRossJoh/itualgs_go/utilities/sharedFunctions"
 )
 
 func TestIsClose(t *testing.T) {

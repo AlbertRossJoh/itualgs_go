@@ -4,7 +4,7 @@ import (
 	"math"
 
 	"github.com/AlbertRossJoh/itualgs_go/customerrors"
-	utils "github.com/AlbertRossJoh/itualgs_go/utilities"
+	utils "github.com/AlbertRossJoh/itualgs_go/utilities/sharedFunctions"
 )
 
 type Vector struct {

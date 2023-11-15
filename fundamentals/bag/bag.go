@@ -1,7 +1,7 @@
 package bag
 
 import (
-	util "github.com/AlbertRossJoh/itualgs_go/utilities"
+	util "github.com/AlbertRossJoh/itualgs_go/utilities/sharedFunctions"
 )
 
 type Bag[T any] struct {
